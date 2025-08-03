@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { FiEdit2, FiLoader, FiCalendar, FiUser, FiHash, FiBook } from "react-icons/fi"
+import Footer from "@/components/footer"
+import { Navigation } from "@/components/navigation"
 
 const TimetablePage = () => {
     const { name, rollNo, branch } = useUser()
@@ -45,9 +47,10 @@ const TimetablePage = () => {
     )
 
     return (
+
         <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
             {/* Navigation would be imported from your components */}
-
+            <Navigation />
             <main className="p-6">
                 <div className="max-w-7xl mx-auto">
                     {/* Header Section */}
@@ -88,7 +91,7 @@ const TimetablePage = () => {
                                 className="bg-white text-purple-900 hover:bg-purple-100 px-6 py-3 rounded-lg flex items-center gap-2 transition-all font-medium"
                             >
                                 <FiEdit2 />
-                                <Link href="/timetable/edit">Edit Timetable</Link>
+                                <Link href="/timetable/create">Edit Timetable</Link>
                             </motion.button>
                         </div>
                     </motion.div>
@@ -163,37 +166,7 @@ const TimetablePage = () => {
             </main>
 
             {/* Footer */}
-            <footer className="bg-purple-900/80 backdrop-blur-md border-t border-purple-700/50 mt-12">
-                <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                        <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-white">
-                            <span>© {new Date().getFullYear()} MyAttendance</span>
-                            <span className="hidden sm:block">•</span>
-                            <span>All rights reserved</span>
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-sm">
-                            <Link
-                                href="/privacy"
-                                className="text-purple-200 hover:text-white transition-colors duration-200"
-                            >
-                                Privacy Policy
-                            </Link>
-                            <Link
-                                href="/terms"
-                                className="text-purple-200 hover:text-white transition-colors duration-200"
-                            >
-                                Terms of Service
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className="text-purple-200 hover:text-white transition-colors duration-200"
-                            >
-                                Contact Us
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     )
 }

@@ -6,10 +6,6 @@ const attendaceSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    day: {
-        type: String, // monday,tuesday
-        required: true
-    },
     date: {
         type: Date,
         default: Date.now
@@ -20,5 +16,5 @@ const attendaceSchema = new mongoose.Schema({
         isPresent: { type: Boolean, required: true },
     }]
 })
-const Attendace = mongoose.models.attendance || mongoose.model('Attendance', attendaceSchema)
+const Attendace = mongoose.models.Attendance || mongoose.model('Attendance', attendaceSchema)
 export default Attendace;
