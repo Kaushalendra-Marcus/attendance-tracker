@@ -11,7 +11,7 @@ const Page = () => {
   const [timetable, setTimetable] = useState<{ [key: string]: { name: string; type: string }[] | undefined }>({});
   const [message, setMessage] = useState({ text: "", type: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { name, rollNo, branch } = useUser();
+  const { rollNo } = useUser();
 
   const handleDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDay = e.target.value;
@@ -85,6 +85,9 @@ const Page = () => {
 
   return (
     <div>
+      <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+            </div>
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 p-6">
         <div className="max-w-4xl mx-auto">

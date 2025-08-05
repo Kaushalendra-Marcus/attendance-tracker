@@ -7,8 +7,8 @@ const attendaceSchema = new mongoose.Schema({
         required: true
     },
     date: {
-        type: Date,
-        default: Date.now
+        type: String,
+        required : true
     },
     records: [{
         name: { type: String, required: true },

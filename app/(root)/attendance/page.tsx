@@ -1,5 +1,4 @@
 "use client"
-
 import { useUser } from "@/app/context/useContext"
 import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
@@ -7,13 +6,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 import Calendar from "react-calendar"
 import { FiCheck, FiX, FiCalendar, FiUser, FiHash, FiBook, FiSave, FiRotateCw } from "react-icons/fi"
-
 type SubjectRecord = {
     name: string;
     type: string;
     isPresent: boolean;
 }
-
 const AttendanceMarker = () => {
     const [showCalendar, setShowCalendar] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -24,13 +21,12 @@ const AttendanceMarker = () => {
     const [records, setRecords] = useState<SubjectRecord[]>([])
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleDateChange = (date: any) => {
+    const handleDateChange = (date) => {
         setSelectedDate(date)
         setShowCalendar(false)
         const Name = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
         setDayName(Name)
     }
-
     useEffect(() => {
         if (!rollNo || !branch || !dayName) return;
 
@@ -83,13 +79,18 @@ const AttendanceMarker = () => {
 
         setIsSubmitting(true)
         try {
+            const offsetIST = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(selectedDate.getTime() + offsetIST);
+            const dateStr = istDate.toISOString().split("T")[0];
+            console.log("IST DATE IS", istDate);
+            console.log("STR DATE IS", dateStr);
             const response = await fetch("/api/attendance", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     rollNo,
                     presents: records,
-                    date: selectedDate
+                    date: dateStr
                 })
             });
 
@@ -107,6 +108,9 @@ const AttendanceMarker = () => {
 
     return (
         <div>
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+            </div>
             <Navigation />
             <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
                 <main className="p-6">

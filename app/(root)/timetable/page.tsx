@@ -3,7 +3,7 @@ import { useUser } from "@/app/context/useContext"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { FiEdit2, FiLoader, FiCalendar, FiUser, FiHash, FiBook } from "react-icons/fi"
 import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
@@ -49,7 +49,9 @@ const TimetablePage = () => {
     return (
 
         <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
-            {/* Navigation would be imported from your components */}
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+            </div>
             <Navigation />
             <main className="p-6">
                 <div className="max-w-7xl mx-auto">

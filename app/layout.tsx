@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google"
 import "./globals.css";
 import { Providers } from "./context/provider";
-
+import Oneko from "@/components/oneko";
+import { Analytics } from '@vercel/analytics/next';
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Attendance App",
-  description: "Created with love by Kaushalendra",
+  title: "MyAttendance",
+  description: "Attendance Portal, Track Your Attendance. Created with love by Kaushalendra",
   icons: {
     icon: "/icon.png"
   }
@@ -24,7 +25,9 @@ export default function RootLayout({
         className={`${inter.className}`}
       >
         <Providers >
+          <Oneko />
           {children}
+          <Analytics />
         </Providers>
       </body>
     </html>

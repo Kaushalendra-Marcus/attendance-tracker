@@ -5,7 +5,7 @@ const UserMobile = () => {
   const { name, rollNo, branch } = useUser()
   
   return (
-    <div className="w-full text-white">
+    <div className="w-full text-white bg-black/80 p-4 rounded-xl border-1 border-gray-800">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
           <div className="flex-shrink-0">

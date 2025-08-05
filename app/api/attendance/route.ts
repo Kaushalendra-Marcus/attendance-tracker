@@ -1,4 +1,3 @@
-
 import Attendace from "@/lib/model/attendance.model";
 import User from "@/lib/model/user.model";
 import { connectToDB } from "@/lib/mongoose";
@@ -17,7 +16,7 @@ export async function PUT(req: NextRequest) {
         }
         const existingAttendance = await Attendace.findOne({
             user: user._id,
-            date: new Date(date)
+            date: date
         })
         const records = presents.map((e: any) => ({
             name: e.name,
@@ -33,7 +32,7 @@ export async function PUT(req: NextRequest) {
             const newAttendance = new Attendace({
                 user: user._id,
                 records: records,
-                date: new Date(date)
+                date: date
             })
             await newAttendance.save()
         }
