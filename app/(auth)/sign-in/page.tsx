@@ -18,28 +18,33 @@ const Page = () => {
     setError("")
 
     try {
-      const res = await fetch("api/signin", {
+      const res = await fetch("/api/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rollno, password })
       })
+
       const data = await res.json()
-      console.log("Name of User is : ", data.user.name);
+
+      if (!res.ok) throw new Error(data.message || "Login failed")
+
+      // Check if user data exists in the response
+      if (!data.user) {
+        throw new Error("User data not found in response")
+      }
+
+      console.log("User data:", data.user);
       setUser({
         name: data.user.name,
         rollNo: data.user.rollno,
         branch: data.user.branch
       })
-      console.log("Data is : ", data);
 
-      if (!res.ok) throw new Error(data.message || "Login failed")
-
-      console.log("User Logged in successfully- file name: sign-in");
       router.push("/")
     } catch (err) {
       const error = err as Error;
-      console.log("Log in fail- file name: sign-in");
-      setError(error.message);
+      console.error("Login error:", error);
+      setError(error.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false)
     }

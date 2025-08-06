@@ -17,7 +17,14 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: "Invalid password" }, { status: 401 });
         }
 
-        return NextResponse.json({ message: "Login successful", user }, { status: 200 });
+        return NextResponse.json({
+            message: "Login successful",
+            user: {
+                name: user.name,
+                rollno: user.rollno,
+                branch: user.branch
+            }
+        }, { status: 200 });
     } catch (err) {
         const error = err as Error
         console.log(error);
