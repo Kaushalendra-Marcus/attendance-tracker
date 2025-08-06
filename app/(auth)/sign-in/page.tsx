@@ -26,6 +26,7 @@ const Page = () => {
       const data = await res.json()
       console.log("Name of User is : ", data.user.name);
       setUser({
+        name: data.user.name,
         rollNo: data.user.rollno,
         branch: data.user.branch
       })
