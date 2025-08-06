@@ -3,10 +3,26 @@ import User from "@/lib/model/user.model";
 import { connectToDB } from "@/lib/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+type Subject = {
+  name: string;
+  type: string;
+  time?: string;
+};
+
+type Day = {
+  day: string;
+  subjects: Subject[];
+};
+
+type RequestBody = {
+  rollNo: string;
+  days: Day[];
+};
+
 export async function POST(req: NextRequest) {
     await connectToDB();
     try {
-        const { rollNo, days } = await req.json();
+        const { rollNo, days } = await req.json() as RequestBody;
         
         if (!rollNo || !days || !days.length) {
             return NextResponse.json({ 
@@ -26,20 +42,16 @@ export async function POST(req: NextRequest) {
         let timetable = await TimeTable.findOne({ user: user._id });
         
         if (!timetable) {
-            // Create new timetable if doesn't exist
             timetable = new TimeTable({
                 user: user._id,
                 days: days
             });
         } else {
-            // Update existing timetable
-            days.forEach((newDay: any) => {
-                const existingDayIndex = timetable.days.findIndex((d: any) => d.day === newDay.day);
+            days.forEach((newDay: Day) => {
+                const existingDayIndex = timetable.days.findIndex((d: Day) => d.day === newDay.day);
                 if (existingDayIndex !== -1) {
-                    // Update existing day
                     timetable.days[existingDayIndex].subjects = newDay.subjects;
                 } else {
-                    // Add new day
                     timetable.days.push(newDay);
                 }
             });
@@ -50,7 +62,8 @@ export async function POST(req: NextRequest) {
             success: true, 
             message: "Timetable updated successfully" 
         }, { status: 200 });
-    } catch (error: any) {
+    } catch (err) {
+        const error = err as Error;
         console.error(error);
         return NextResponse.json({ 
             success: false, 

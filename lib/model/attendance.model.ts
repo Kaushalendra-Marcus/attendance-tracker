@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import User from "./user.model";
 const attendaceSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,

@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useUser } from "@/app/context/useContext"
-import { useState, useRef } from "react"
+import { useRef } from "react"
 
 interface StatItem {
     name: string

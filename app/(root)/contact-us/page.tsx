@@ -114,7 +114,7 @@ export default function ContactPage() {
           transition={{ duration: 0.7, delay: 0.5 }}
           className="text-4xl md:text-5xl font-bold text-white mb-6 text-center"
         >
-          Let's Connect & Collaborate
+          Let{"'"} Connect & Collaborate
         </motion.h1>
 
         <motion.p
@@ -123,10 +123,9 @@ export default function ContactPage() {
           transition={{ delay: 0.8 }}
           className="text-purple-100 mb-12 text-center max-w-xl text-lg"
         >
-          I'm always open to new opportunities, creative projects, or just a friendly chat!
+          I{"'"}m always open to new opportunities, creative projects, or just a friendly chat!
         </motion.p>
 
-        {/* Floating social links */}
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 w-full max-w-4xl">
           {socials.map((social, index) => (
             <motion.a
@@ -182,7 +181,7 @@ export default function ContactPage() {
             }}
             className="absolute -left-10 -top-10 bg-white/10 backdrop-blur-sm p-4 rounded-full border border-white/20"
           >
-            <span className="text-white">👨‍💻 Let's build something!</span>
+            <span className="text-white">👨‍💻 Let{"'"}s build something!</span>
           </motion.div>
 
           <motion.div

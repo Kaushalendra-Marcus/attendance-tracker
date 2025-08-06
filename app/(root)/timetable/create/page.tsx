@@ -57,7 +57,7 @@ const Page = () => {
 
     try {
       const days = Object.entries(timetable)
-        .filter(([_, subjects]) => subjects?.length)
+        .filter(([subjects]) => subjects?.length)
         .map(([day, subjects]) => ({
           day,
           subjects: subjects?.filter(s => s.name.trim()) || []
@@ -76,7 +76,8 @@ const Page = () => {
       if (!response.ok) throw new Error("Failed to create timetable");
 
       setMessage({ text: "Timetable created successfully!", type: "success" });
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as Error
       setMessage({ text: error.message || "Failed to create timetable", type: "error" });
     } finally {
       setIsSubmitting(false);

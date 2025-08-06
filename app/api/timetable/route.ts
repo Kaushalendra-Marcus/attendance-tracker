@@ -1,4 +1,4 @@
-import { useUser } from "@/app/context/useContext";
+
 import TimeTable from "@/lib/model/timetable.model";
 import User from "@/lib/model/user.model";
 import { connectToDB } from "@/lib/mongoose";
@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({ success: true, data: timetable });
-    } catch (error) {
+    } catch (err) {
+        const error = err as Error
         return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
     }
 }

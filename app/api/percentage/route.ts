@@ -5,11 +5,11 @@ import Attendance from "@/lib/model/attendance.model";
 
 function getRangeDaysWithoutSundays(start: string, end: string): Date[] {
   const dates: Date[] = [];
-  let current = new Date(start);
+  const current = new Date(start);
   const to = new Date(end);
   
   while (current <= to) {
-    if (current.getDay() !== 0) { // Skip Sundays
+    if (current.getDay() !== 0) { 
       dates.push(new Date(current));
     }
     current.setDate(current.getDate() + 1);

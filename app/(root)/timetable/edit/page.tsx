@@ -9,7 +9,7 @@ const Page = () => {
     const [timetable, setTimetable] = useState<{ [key: string]: { name: string; type: string }[] | undefined }>({});
     const [message, setMessage] = useState({ text: "", type: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { name, rollNo, branch } = useUser();
+    const { rollNo, branch } = useUser();
 
     const handleDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newDay = e.target.value;
@@ -55,7 +55,7 @@ const Page = () => {
 
         try {
             const days = Object.entries(timetable)
-                .filter(([_, subjects]) => subjects?.length)
+                .filter(([subjects]) => subjects?.length)
                 .map(([day, subjects]) => ({
                     day,
                     subjects: subjects?.filter(s => s.name.trim()) || []
@@ -74,7 +74,8 @@ const Page = () => {
             if (!response.ok) throw new Error("Failed to create timetable");
 
             setMessage({ text: "Timetable created successfully!", type: "success" });
-        } catch (error: any) {
+        } catch (err) {
+            const error = err as Error
             setMessage({ text: error.message || "Failed to create timetable", type: "error" });
         } finally {
             setIsSubmitting(false);
@@ -223,8 +224,8 @@ const Page = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className={`p-4 rounded-lg border ${message.type === "success"
-                                ? "bg-green-900/40 border-green-700/50"
-                                : "bg-red-900/40 border-red-700/50"
+                            ? "bg-green-900/40 border-green-700/50"
+                            : "bg-red-900/40 border-red-700/50"
                             } text-white text-center`}
                     >
                         {message.text}

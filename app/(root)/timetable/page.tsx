@@ -9,8 +9,26 @@ import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
 
 const TimetablePage = () => {
+    type Subject = {
+        _id: string;
+        name: string;
+        type: 'subject' | 'lab';
+        time?: string;
+    };
+
+    type Day = {
+        _id: string;
+        day: string;
+        subjects: Subject[];
+    };
+
+    type TimetableData = {
+        data: {
+            days: Day[];
+        };
+    };
     const { name, rollNo, branch } = useUser()
-    const [timetable, setTimeTable] = useState<any>(null)
+    const [timetable, setTimeTable] = useState<TimetableData | null>(null)
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
@@ -27,6 +45,7 @@ const TimetablePage = () => {
                     setTimeTable(data)
                 }
             } catch (error) {
+                console.error("Failed to fetch timetable:", error);
                 router.push("/timetable/create")
             } finally {
                 setLoading(false)
@@ -110,9 +129,9 @@ const TimetablePage = () => {
                             <h2 className="text-2xl font-bold text-white">Class Schedule</h2>
                         </div>
 
-                        {timetable?.data?.days?.length > 0 ? (
+                        {timetable?.data?.days && timetable.data.days.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {timetable.data.days.map((day: any) => (
+                                {timetable.data.days.map((day: Day) => (
                                     <motion.div
                                         key={day._id}
                                         whileHover={{ y: -5 }}
@@ -122,7 +141,7 @@ const TimetablePage = () => {
                                             {day.day}
                                         </h3>
                                         <div className="space-y-3">
-                                            {day.subjects.map((subject: any) => (
+                                            {day.subjects.map((subject: Subject) => (
                                                 <motion.div
                                                     key={subject._id}
                                                     whileHover={{ scale: 1.02 }}

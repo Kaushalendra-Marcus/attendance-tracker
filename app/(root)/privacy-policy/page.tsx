@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
                         <h2 className="text-2xl font-semibold text-white mb-4">1. Introduction</h2>
                         <div className="bg-green-50 p-4 rounded-lg mb-4">
                             <p className="text-gray-600 mb-4">
-                                Welcome to Attendance Marker ("we", "our", or "us"). We are committed to protecting your privacy and ensuring the security of your personal information.
+                                {`Welcome to Attendance Marker ("we", "our", or "us"). We are committed to protecting your privacy and ensuring the security of your personal information.`}
                             </p>
                             <p className="text-gray-600">
                                 This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our attendance tracking application that calculates attendance between two dates.
@@ -164,13 +164,13 @@ export default function PrivacyPolicy() {
                             <p className="text-purple-100 mb-3">
                                 If you have any questions about this Privacy Policy, please contact us at:
                             </p>
-                            <a 
-                            href="mailto:yadavkausha4a5@gmail.com"
-                            target="_blank"
+                            <a
+                                href="mailto:yadavkausha4a5@gmail.com"
+                                target="_blank"
                             >
-                            <div className="bg-purple-800/50 p-3 block rounded-lg border border-purple-700/30 cursor-pointer">
-                                <p className="text-purple-50 text-center break-words">yadavkausha4a5@gmail.com</p>
-                            </div>
+                                <div className="bg-purple-800/50 p-3 block rounded-lg border border-purple-700/30 cursor-pointer">
+                                    <p className="text-purple-50 text-center break-words">yadavkausha4a5@gmail.com</p>
+                                </div>
                             </a>
                         </div>
                     </section>

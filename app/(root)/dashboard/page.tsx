@@ -125,9 +125,10 @@ const Dashboard = () => {
                 percentage: data.total > 0 ? Math.round((data.present / data.total) * 100) : 0
             })
             toast.success("Attendance data fetched successfully!")
-        } catch (error: any) {
+        } catch (err) {
+            const error = err as Error
             console.error("Attendance fetch error:", error)
-            toast.error(error.message || "Failed to fetch attendance data")
+            toast.error(error.message || "Failed to fetch attendance")
             setAttendanceData(null)
         } finally {
             setLoading(false)
