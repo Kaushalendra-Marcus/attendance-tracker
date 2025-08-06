@@ -3,18 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/lib/model/user.model";
 import Attendance from "@/lib/model/attendance.model";
 
-function getRangeDaysWithoutSundays(start: string, end: string): Date[] {
-  const dates: Date[] = [];
+function getRangeDaysWithoutSundays(start: string, end: string): string[] {
+  const dates: string[] = [];
   const current = new Date(start);
   const to = new Date(end);
-  
+
   while (current <= to) {
-    if (current.getDay() !== 0) { 
-      dates.push(new Date(current));
+    if (current.getDay() !== 0) {
+      dates.push(current.toISOString().split('T')[0]); // Store as YYYY-MM-DD
     }
     current.setDate(current.getDate() + 1);
   }
   return dates;
+}
+
+function normalizeString(str: string) {
+  return str.toLowerCase().replace(/\s+/g, '');
 }
 
 export async function PUT(req: NextRequest) {
@@ -40,15 +44,16 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    // Get all dates in range (excluding Sundays)
-    const allDates = getRangeDaysWithoutSundays(fromDate, toDate);
+    // Normalize dates
+    const startDate = new Date(fromDate).toISOString().split('T')[0];
+    const endDate = new Date(toDate).toISOString().split('T')[0];
 
-    // Find attendance records for this user in date range
+    // Find attendance records
     const attendanceDocs = await Attendance.find({
       user: user._id,
-      date: { 
-        $gte: new Date(fromDate).toISOString(), 
-        $lte: new Date(toDate).toISOString() 
+      date: {
+        $gte: startDate,
+        $lte: endDate
       }
     });
 
@@ -56,38 +61,31 @@ export async function PUT(req: NextRequest) {
     let total = 0;
     let subjectFound = false;
 
-    // Check each date in range
-    for (const date of allDates) {
-      const dateStr = date.toISOString().split('T')[0];
-      
-      // Find attendance record for this date
-      const doc = attendanceDocs.find(d => 
-        new Date(d.date).toISOString().split('T')[0] === dateStr
+    // Normalize subject name for comparison
+    const normalizedSubjectName = normalizeString(subjectName);
+
+    // Check each attendance record
+    for (const doc of attendanceDocs) {
+      const record = doc.records.find(r =>
+        normalizeString(r.name) === normalizedSubjectName &&
+        r.type === type
       );
 
-      if (doc) {
-        // Find the specific subject record
-        const record = doc.records.find(r => 
-          r.name.toLowerCase() === subjectName.toLowerCase() && 
-          r.type === type
-        );
-
-        if (record) {
-          subjectFound = true;
-          total++;
-          if (record.isPresent) present++;
-        }
+      if (record) {
+        subjectFound = true;
+        total++;
+        if (record.isPresent) present++;
       }
     }
 
     if (!subjectFound) {
       return NextResponse.json({
         success: false,
-        message: "No attendance records found for this subject",
+        message: "Enter correct subject/lab name, No record found for given subject/lab",
         present: 0,
         total: 0,
         percentage: 0
-      }, { status: 200 }); 
+      }, { status: 200 });
     }
 
     return NextResponse.json({
@@ -105,3 +103,5 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+
+

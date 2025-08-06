@@ -72,7 +72,7 @@ const Dashboard = () => {
     };
 
     const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim()
+        const value = e.target.value
         if (/^[a-zA-Z0-9\s-]+$/.test(value) || value === "") {
             setSubjectName(value)
         }
@@ -194,7 +194,7 @@ const Dashboard = () => {
 
                     {/* Subject Selection */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-purple-100 mb-2">Subject Name</label>
+                        <label className="block text-sm font-medium text-purple-100 mb-2">Subject/Lab Name</label>
                         <motion.div whileHover={{ scale: 1.01 }}>
                             <input
                                 type="text"
@@ -202,7 +202,6 @@ const Dashboard = () => {
                                 onChange={handleSubjectChange}
                                 className="w-full px-4 py-3 bg-purple-900/30 border border-purple-700/50 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-purple-400"
                                 placeholder="Enter subject name"
-                                maxLength={50}
                             />
                         </motion.div>
                     </div>

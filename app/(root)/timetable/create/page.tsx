@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiSave, FiChevronDown, FiTrash2 } from "react-icons/fi";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Page = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [timetable, setTimetable] = useState<{ [key: string]: { name: string; type: string }[] | undefined }>({});
-  const [message, setMessage] = useState({ text: "", type: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { rollNo } = useUser();
 
@@ -53,7 +54,6 @@ const Page = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    setMessage({ text: "", type: "" });
 
     try {
       const days = Object.entries(timetable)
@@ -64,7 +64,8 @@ const Page = () => {
         }));
 
       if (!days.length) {
-        throw new Error("Please add at least one day with subjects");
+        toast.error("Please add at least one day with subjects");
+        return;
       }
 
       const response = await fetch("/api/timetable/create", {
@@ -74,11 +75,11 @@ const Page = () => {
       });
 
       if (!response.ok) throw new Error("Failed to create timetable");
-
-      setMessage({ text: "Timetable created successfully!", type: "success" });
+      
+      toast.success("Timetable created successfully!");
     } catch (err) {
-      const error = err as Error
-      setMessage({ text: error.message || "Failed to create timetable", type: "error" });
+      const error = err as Error;
+      toast.error(error.message || "Failed to create timetable");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,8 +88,23 @@ const Page = () => {
   return (
     <div>
       <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-            </div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+      </div>
+      
+      
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 p-6">
         <div className="max-w-4xl mx-auto">
@@ -117,7 +133,7 @@ const Page = () => {
                   onChange={handleDayChange}
                   className="appearance-none bg-purple-900/40 border border-purple-700/50 text-white rounded-lg px-4 py-3 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  <option value="monday">Select a day</option>
+                  <option value="">Select a day</option>
                   <option value="monday">Monday</option>
                   <option value="tuesday">Tuesday</option>
                   <option value="wednesday">Wednesday</option>
@@ -129,7 +145,6 @@ const Page = () => {
               </div>
             </div>
 
-            {/* Periods List */}
             <AnimatePresence>
               {selectedDay && timetable[selectedDay] && (
                 <motion.div
@@ -224,26 +239,10 @@ const Page = () => {
               </motion.button>
             </div>
           </motion.div>
-
-          {/* Message Display */}
-          {message.text && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-4 rounded-lg border ${message.type === "success"
-                ? "bg-green-900/40 border-green-700/50"
-                : "bg-red-900/40 border-red-700/50"
-                } text-white text-center`}
-            >
-              {message.text}
-            </motion.div>
-          )}
         </div>
-
       </div>
       <Footer />
     </div>
-
   );
 };
 

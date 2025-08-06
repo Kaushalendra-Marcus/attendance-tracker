@@ -4,44 +4,49 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import User from "./user"
 import UserMobile from "./UserMobile"
-import { FiHome, FiPieChart, FiCalendar, FiSettings, FiMenu, FiX, FiInfo } from "react-icons/fi"
+import { FiHome, FiPieChart, FiCalendar, FiSettings, FiMenu, FiX, FiInfo,FiPhone } from "react-icons/fi"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 
 interface NavLinkProps {
   href: string
   onClick?: () => void
   children: React.ReactNode
-  isActive?: boolean
   icon: React.ComponentType<{ className?: string }>
 }
 
-const NavLink = ({ href, onClick, children, isActive = false, icon: Icon }: NavLinkProps) => (
-  <motion.div
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    className="relative group"
-  >
-    <Link
-      href={href}
-      onClick={onClick}
-      className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300
-        ${isActive
-          ? 'text-white bg-gradient-to-r from-purple-500/30 to-indigo-500/30 border border-purple-400/50 shadow-lg shadow-purple-500/20'
-          : 'text-purple-200 hover:text-white hover:bg-white/5 border border-transparent'
-        }`}
+const NavLink = ({ href, onClick, children, icon: Icon }: NavLinkProps) => {
+  const pathname = usePathname()
+  const isActive = pathname === href
+  
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="relative group"
     >
-      <Icon className="text-lg" />
-      {children}
-    </Link>
-    {isActive && (
-      <motion.div
-        className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-indigo-500/20 blur"
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-    )}
-  </motion.div>
-)
+      <Link
+        href={href}
+        onClick={onClick}
+        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300
+          ${isActive
+            ? 'text-white bg-gradient-to-r from-purple-500/30 to-indigo-500/30 border border-purple-400/50 shadow-lg shadow-purple-500/20'
+            : 'text-purple-200 hover:text-white hover:bg-white/5 border border-transparent'
+          }`}
+      >
+        <Icon className="text-lg" />
+        {children}
+      </Link>
+      {isActive && (
+        <motion.div
+          className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-indigo-500/20 blur"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      )}
+    </motion.div>
+  )
+}
 
 interface MobileNavigationProps {
   isOpen: boolean
@@ -63,7 +68,7 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => (
       >
         <div className="mx-4 mt-2">
           <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-2 shadow-2xl">
-            <NavLink href="/" onClick={onClose} isActive icon={FiHome}>
+            <NavLink href="/" onClick={onClose} icon={FiHome}>
               Home
             </NavLink>
             <NavLink href="/timetable" onClick={onClose} icon={FiCalendar}>
@@ -74,6 +79,9 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => (
             </NavLink>
             <NavLink href="/dashboard" onClick={onClose} icon={FiPieChart}>
               Dashboard
+            </NavLink>
+            <NavLink href="/contact-us" onClick={onClose} icon={FiPhone}>
+              Contact Us
             </NavLink>
             <NavLink href="/about-us" onClick={onClose} icon={FiInfo}>
               About Us
@@ -93,7 +101,6 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => (
             >
               Logout
             </motion.button>
-
           </motion.div>
         </div>
       </motion.div>
@@ -223,9 +230,6 @@ export const Navigation = () => {
               Logout
             </motion.button>
           </div>
-
-
-
 
           <div className="md:hidden ">
             <motion.button

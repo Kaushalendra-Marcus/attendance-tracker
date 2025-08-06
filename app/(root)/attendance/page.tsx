@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import Calendar from 'react-calendar'
 import { Value } from "react-calendar/dist/shared/types.js"
 import { FiCheck, FiX, FiCalendar, FiUser, FiHash, FiBook, FiSave, FiRotateCw } from "react-icons/fi"
-
+import { ToastContainer, toast } from 'react-toastify';
 
 type SubjectRecord = {
     name: string;
@@ -48,7 +48,7 @@ const AttendanceMarker = () => {
 
     const handleDateChange = (value: Value) => {
         if (value instanceof Date) {
-            const date = value as Date 
+            const date = value as Date
             setSelectedDate(date)
             setShowCalendar(false)
             const Name = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
@@ -126,10 +126,10 @@ const AttendanceMarker = () => {
             if (!response.ok) throw new Error("Failed to save attendance");
 
             const result = await response.json();
-            alert(result.message || "Attendance saved successfully");
+            toast.success("Attendace Marked Successfully")
         } catch (error) {
             console.error("Error saving attendance:", error);
-            alert("Failed to save attendance");
+            toast.error("Attendance not marked, something error")
         } finally {
             setIsSubmitting(false)
         }
@@ -141,6 +141,18 @@ const AttendanceMarker = () => {
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
             <Navigation />
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
             <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
                 <main className="p-6">
                     <div className="max-w-4xl mx-auto">
