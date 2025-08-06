@@ -21,7 +21,8 @@ export async function POST(req: Request) {
                 branch: newUser.branch,
             }
         }, { status: 201 })
-    } catch (error: any) {
+    } catch (err) {
+        const error = err as Error
         console.log(error);
         return NextResponse.json({ error: "Server Error" }, { status: 500 })
     }

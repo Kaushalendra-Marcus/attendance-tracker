@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: true, data: timetable });
     } catch (err) {
         const error = err as Error
+        console.log(error);
         return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
     }
 }
