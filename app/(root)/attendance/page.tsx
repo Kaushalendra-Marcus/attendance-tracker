@@ -4,29 +4,58 @@ import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
-import Calendar from "react-calendar"
+import Calendar from 'react-calendar'
+import { Value } from "react-calendar/dist/shared/types.js"
 import { FiCheck, FiX, FiCalendar, FiUser, FiHash, FiBook, FiSave, FiRotateCw } from "react-icons/fi"
+
+
 type SubjectRecord = {
     name: string;
     type: string;
     isPresent: boolean;
 }
+
+type Subject = {
+    name: string;
+    type: string;
+}
+
+type Lab = {
+    name: string;
+    type: string;
+}
+
+type Day = {
+    day: string;
+    subjects: Array<Subject | Lab>;
+}
+
+type TimetableResponse = {
+    data: {
+        days: Day[];
+    };
+}
+
 const AttendanceMarker = () => {
     const [showCalendar, setShowCalendar] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
     const [dayName, setDayName] = useState("")
-    const [subjects, setSubjects] = useState<any[]>([])
-    const [labs, setLabs] = useState<any[]>([])
+    const [subjects, setSubjects] = useState<Subject[]>([])
+    const [labs, setLabs] = useState<Lab[]>([])
     const { name, rollNo, branch } = useUser()
     const [records, setRecords] = useState<SubjectRecord[]>([])
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date)
-        setShowCalendar(false)
-        const Name = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
-        setDayName(Name)
+    const handleDateChange = (value: Value) => {
+        if (value instanceof Date) {
+            const date = value as Date 
+            setSelectedDate(date)
+            setShowCalendar(false)
+            const Name = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+            setDayName(Name)
+        }
     }
+
     useEffect(() => {
         if (!rollNo || !branch || !dayName) return;
 
@@ -35,18 +64,18 @@ const AttendanceMarker = () => {
                 const res = await fetch(`/api/timetable?rollNo=${rollNo}&branch=${branch}`)
                 if (!res.ok) throw new Error("Not Found")
 
-                const data = await res.json()
-                const dayObj = data.data.days.find((d: any) => d.day.toLowerCase() === dayName)
+                const data: TimetableResponse = await res.json()
+                const dayObj = data.data.days.find((d: Day) => d.day.toLowerCase() === dayName)
 
                 if (dayObj) {
                     const allSubjects = dayObj.subjects || []
-                    const onlySubjects = allSubjects.filter((item: any) => item.type === "subject")
-                    const onlyLabs = allSubjects.filter((item: any) => item.type === "lab")
+                    const onlySubjects = allSubjects.filter((item: Subject) => item.type === "subject")
+                    const onlyLabs = allSubjects.filter((item: Lab) => item.type === "lab")
 
                     setSubjects(onlySubjects)
                     setLabs(onlyLabs)
 
-                    const initialRecords = allSubjects.map((item: any) => ({
+                    const initialRecords = allSubjects.map((item: Subject | Lab) => ({
                         name: item.name,
                         type: item.type,
                         isPresent: false
@@ -202,7 +231,7 @@ const AttendanceMarker = () => {
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-3">
-                                            {subjects.map((sub: any, idx: number) => {
+                                            {subjects.map((sub: Subject, idx: number) => {
                                                 const isPresent = records.find(r => r.name === sub.name && r.type === sub.type)?.isPresent || false;
                                                 return (
                                                     <motion.div
@@ -254,12 +283,11 @@ const AttendanceMarker = () => {
                                         className="bg-purple-800/30 backdrop-blur-sm border border-purple-700/50 rounded-xl p-6"
                                     >
                                         <div className="flex items-center gap-3 mb-6">
-                                            {/* <FiFlask className="text-2xl text-purple-300" /> */}
                                             <h2 className="text-2xl font-bold text-white">Labs</h2>
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-3">
-                                            {labs.map((lab: any, idx: number) => {
+                                            {labs.map((lab: Lab, idx: number) => {
                                                 const isPresent = records.find(r => r.name === lab.name && r.type === lab.type)?.isPresent || false;
                                                 return (
                                                     <motion.div

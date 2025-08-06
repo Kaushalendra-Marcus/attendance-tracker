@@ -38,9 +38,10 @@ const Page = () => {
       alert(data.message)
       console.log("User signed up successfully")
       router.push("/")
-    } catch (err: any) {
-      console.log("Sign up failed")
-      setError(err.message)
+    } catch (err) {
+      const error = err as Error;
+      console.log("Sign up fail- file name: sign-up");
+      setError(error.message);
     } finally {
       setIsLoading(false)
     }

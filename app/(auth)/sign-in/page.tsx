@@ -36,39 +36,40 @@ const Page = () => {
 
       console.log("User Logged in successfully- file name: sign-in");
       router.push("/")
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as Error;
       console.log("Log in fail- file name: sign-in");
-      setError(err.message)
+      setError(error.message);
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 flex items-center justify-center p-4">
-        <div className="absolute inset-0">
-          <motion.div
-            className="absolute inset-0"
-            animate={{
-              background: [
-                'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%)',
-                'radial-gradient(circle at 80% 50%, rgba(255, 119, 198, 0.3) 0%, transparent 50%)',
-                'radial-gradient(circle at 50% 20%, rgba(120, 119, 255, 0.3) 0%, transparent 50%)',
-              ]
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "linear"
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black/50 to-indigo-900/20" />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 flex items-center justify-center p-4">
+      <div className="absolute inset-0">
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%)',
+              'radial-gradient(circle at 80% 50%, rgba(255, 119, 198, 0.3) 0%, transparent 50%)',
+              'radial-gradient(circle at 50% 20%, rgba(120, 119, 255, 0.3) 0%, transparent 50%)',
+            ]
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "linear"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black/50 to-indigo-900/20" />
+      </div>
 
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-        </div>
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+      </div>
       <div className="w-full max-w-md">
         <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-white/20">
           <div className="p-8">
@@ -83,8 +84,7 @@ const Page = () => {
                 />
               </div>
               <h1 className="text-3xl font-bold text-white mb-1">Student Portal</h1>
-              <h2 className="text-md font-bold text-white mb-1">Should I Attend today's Class</h2>
-              <p className="text-white/80">Enter your credentials to continue</p>
+              <h2 className="text-md font-bold text-white mb-1">Should I Attend today&apos;s Class</h2>              <p className="text-white/80">Enter your credentials to continue</p>
             </div>
 
             {error && (
