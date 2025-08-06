@@ -18,34 +18,43 @@ const Page = () => {
   const { setUser } = useUser()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+  e.preventDefault()
+  setIsLoading(true)
+  setError("")
 
-    try {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, rollno, password, branch })
-      })
-      const data = await res.json()
+  try {
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, rollno, password, branch })
+    })
+    
+    const data = await res.json()
+    
+    if (!res.ok) {
+      throw new Error(data.message || "Signup failed")
+    }
+
+    // Only set user if we have the data
+    if (data.user) {
       setUser({
         name: data.user.name,
         rollNo: data.user.rollno,
         branch: data.user.branch
       })
-      if (!res.ok) throw new Error(data.message || "Signup failed")
-      alert(data.message)
-      console.log("User signed up successfully")
-      router.push("/")
-    } catch (err) {
-      const error = err as Error;
-      console.log("Sign up fail- file name: sign-up");
-      setError(error.message);
-    } finally {
-      setIsLoading(false)
     }
+
+    alert(data.message)
+    console.log("User signed up successfully")
+    router.push("/")
+  } catch (err) {
+    const error = err as Error;
+    console.error("Sign up failed:", error);
+    setError(error.message);
+  } finally {
+    setIsLoading(false)
   }
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 flex items-center justify-center p-4">
