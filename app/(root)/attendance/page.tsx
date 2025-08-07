@@ -156,7 +156,7 @@ const AttendanceMarker = () => {
             <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
                 <main className="p-6">
                     <div className="max-w-4xl mx-auto">
-                        {/* Header Section */}
+                        
                         <motion.div
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -166,7 +166,7 @@ const AttendanceMarker = () => {
                             <p className="text-purple-200">Track your daily class presence</p>
                         </motion.div>
 
-                        {/* Profile Card */}
+                        
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -188,7 +188,7 @@ const AttendanceMarker = () => {
                             </div>
                         </motion.div>
 
-                        {/* Date Picker */}
+                        
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -220,7 +220,7 @@ const AttendanceMarker = () => {
                             </AnimatePresence>
                         </motion.div>
 
-                        {/* Attendance Section */}
+                        
                         {selectedDate && (
                             <motion.div
                                 initial={{ opacity: 0 }}
@@ -343,7 +343,7 @@ const AttendanceMarker = () => {
                                     </motion.div>
                                 )}
 
-                                {/* Submit Button */}
+                                
                                 <motion.button
                                     onClick={handleSubmit}
                                     disabled={!records.length || isSubmitting}

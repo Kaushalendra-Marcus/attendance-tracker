@@ -1,17 +1,28 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./context/provider";
 import Oneko from "@/components/oneko";
-import { Analytics } from '@vercel/analytics/next';
-const inter = Inter({ subsets: ["latin"] })
+import { Analytics } from "@vercel/analytics/next";
+import InstallPrompt from "@/components/install";
+
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MyAttendance",
-  description: "Attendance Portal, Track Your Attendance. Created with love by Kaushalendra",
+  description: "Track your attendance easily",
+  manifest: "/manifest.json",
+  themeColor: "#FFFFFF",
   icons: {
-    icon: "/icon.png"
-  }
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "MyAttendance",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({
@@ -21,11 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className}`}
-      >
-        <Providers >
+      <head /> {/* ✅ Important for metadata injection */}
+      <body className={inter.className}>
+        <Providers>
           <Oneko />
+          <InstallPrompt />
           {children}
           <Analytics />
         </Providers>
