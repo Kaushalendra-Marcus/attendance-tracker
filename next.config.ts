@@ -5,7 +5,7 @@ import type { NextConfig } from 'next'
 const isDev = process.env.NODE_ENV === 'development'
 
 const nextConfig: NextConfig = {
-  distDir: 'build',
+  // ❌ Don't use distDir here — Vercel expects .next/
   reactStrictMode: true,
   swcMinify: true,
   compiler: {
