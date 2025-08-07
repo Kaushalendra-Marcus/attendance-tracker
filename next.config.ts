@@ -1,4 +1,5 @@
-import  withPWA  from '@ducanh2912/next-pwa'
+// next.config.ts
+import withPWA from '@ducanh2912/next-pwa'
 import type { NextConfig } from 'next'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -10,7 +11,6 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: !isDev
   },
-  // Other Next.js config options can go here
 }
 
 export default withPWA({
@@ -22,6 +22,5 @@ export default withPWA({
   reloadOnOnline: true,
   workboxOptions: {
     disableDevLogs: isDev,
-    // Customize workbox options if needed
   }
 })(nextConfig)
