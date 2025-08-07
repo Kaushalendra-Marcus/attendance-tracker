@@ -1,60 +1,102 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+
 interface BeforeInstallPromptEvent extends Event {
     readonly platforms: string[]
-    readonly userChoice: Promise<{
-        outcome: 'accepted' | 'dismissed'
-        platform: string
-    }>
+    readonly userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>
     prompt(): Promise<void>
 }
 
 export default function InstallPrompt() {
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-    const [showInstall, setShowInstall] = useState(false)
+    const [show, setShow] = useState(false)
 
     useEffect(() => {
         const handler = (e: Event) => {
             const promptEvent = e as BeforeInstallPromptEvent
             e.preventDefault?.()
             setDeferredPrompt(promptEvent)
-            setShowInstall(true)
+            setShow(true)
         }
-
-        window.addEventListener('beforeinstallprompt', handler)
-
-        return () => {
-            window.removeEventListener('beforeinstallprompt', handler)
-        }
+        window.addEventListener("beforeinstallprompt", handler)
+        return () => window.removeEventListener("beforeinstallprompt", handler)
     }, [])
 
-    const handleInstallClick = async () => {
+    const handleInstall = async () => {
         if (!deferredPrompt) return
-
-        deferredPrompt.prompt()
-        const choiceResult = await deferredPrompt.userChoice
-
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt')
-        } else {
-            console.log('User dismissed the install prompt')
-        }
-
-        setShowInstall(false)
+        await deferredPrompt.prompt()
+        const { outcome } = await deferredPrompt.userChoice
+        outcome === "accepted" && console.log("PWA installed ✨")
+        setShow(false)
     }
 
-    if (!showInstall) return null
+
+    useEffect(() => {
+        if (show) {
+            const t = setTimeout(() => setShow(false), 80000)
+            return () => clearTimeout(t)
+        }
+    }, [show])
 
     return (
-        <div className="fixed bottom-4 right-4 bg-white border px-4 py-2 rounded shadow z-50">
-            <p className="mb-2">Install this app?</p>
-            <button
-                onClick={handleInstallClick}
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-            >
-                Install
-            </button>
-        </div>
+        <AnimatePresence>
+            {show && (
+                <motion.div
+                    initial={{ opacity: 0, y: 100, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 100, scale: 0.8 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    className="fixed bottom-4 right-4 z-50"
+                >
+
+                    <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                        {[...Array(5)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute rounded-full bg-purple-300/20"
+                                initial={{ x: Math.random() * 100, y: Math.random() * 100 }}
+                                animate={{
+                                    x: [null, Math.random() * 60 - 30],
+                                    y: [null, Math.random() * 60 - 30],
+                                    opacity: [0.2, 1, 0.2],
+                                }}
+                                transition={{
+                                    duration: Math.random() * 4 + 3,
+                                    repeat: Infinity,
+                                    repeatType: "reverse",
+                                    ease: "easeInOut",
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 w-72 shadow-2xl shadow-purple-500/30">
+                    <div className="absolute inset-0">
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+                    </div>
+                    
+
+                        <motion.button
+                            onClick={() => setShow(false)}
+                            whileHover={{ rotate: 90, scale: 1.1 }}
+                            className="absolute top-3 right-3 text-white/60 hover:text-white transition"
+                        >
+                            ✖
+                        </motion.button>
+
+                        <h3 className="text-white font-bold mb-1">Install MyAttendance</h3>
+                        <p className="text-purple-200 text-sm mb-3">Get App in your mobile</p>
+                        <button
+                            onClick={handleInstall}
+                            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-4 py-2 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all"
+                        >
+                            Install Now
+                        </button>
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     )
 }
