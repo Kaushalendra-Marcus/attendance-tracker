@@ -11,11 +11,22 @@ import { Navigation } from "@/components/navigation"
 import Footer from "@/components/footer"
 
 type SubjectType = 'subject' | 'lab' | null
-
+interface Subject {
+    name: string
+}
+interface Day {
+    subjects: Subject[]
+}
+interface TimetableResponse {
+    data: {
+        days: Day[];
+    };
+}
 const Dashboard = () => {
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
-    const [subjectName, setSubjectName] = useState<string>("")
+    const [subjectNames, setSubjectNames] = useState<string[]>([])
+    const [selectedSubject, setSelectedSubject] = useState<string>("")
     const [type, setType] = useState<SubjectType>(null)
     const [loading, setLoading] = useState(false)
     const [showLoading, setShowLoading] = useState(false)
@@ -28,7 +39,11 @@ const Dashboard = () => {
     const [showStartCalendar, setShowStartCalendar] = useState(false)
     const [showEndCalendar, setShowEndCalendar] = useState(false)
 
-    // Validate date range
+
+    const handleSubjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedSubject(e.target.value)
+    }
+
     useEffect(() => {
         if (startDate && endDate && startDate > endDate) {
             toast.error("Start date cannot be after end date")
@@ -36,7 +51,7 @@ const Dashboard = () => {
         }
     }, [startDate, endDate])
 
-    // Show loading indicator only after a small delay
+
     useEffect(() => {
         let timer: NodeJS.Timeout
         if (loading) {
@@ -53,7 +68,7 @@ const Dashboard = () => {
     ): void => {
         if (!(value instanceof Date)) return;
 
-        const date = value; // now TS knows it's a Date
+        const date = value;
         if (type === 'start') {
             if (endDate && date > endDate) {
                 toast.error("Start date cannot be after end date")
@@ -70,16 +85,27 @@ const Dashboard = () => {
             setShowEndCalendar(false);
         }
     };
-
-    const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value
-        if (/^[a-zA-Z0-9\s-]+$/.test(value) || value === "") {
-            setSubjectName(value)
+    useEffect(() => {
+        const fetchSubjectList = async () => {
+            try {
+                console.log("-> calling /api/timetable");
+                const res = await fetch(`/api/timetable?rollNo=${rollNo}&branch=${branch}`)
+                if (!res.ok) return;
+                const data: TimetableResponse = await res.json()
+                const allSubjects = data.data.days.flatMap((day: Day) => day.subjects);
+                const uniqueNames = Array.from(new Set(allSubjects.map((sub: Subject) => sub.name)))
+                setSubjectNames(uniqueNames)
+            } catch (err) {
+                const error = err as Error
+                console.error("Error in Subject List", error);
+                toast.error(error.message || "Failed to fetch Subject")
+            }
         }
-    }
+        fetchSubjectList()
+    }, [rollNo, branch])
 
     const fetchAttendance = async () => {
-        if (!rollNo || !subjectName || !type || !startDate || !endDate) {
+        if (!rollNo || !selectedSubject || !type || !startDate || !endDate) {
             toast.error("Please fill all fields")
             return
         }
@@ -93,7 +119,7 @@ const Dashboard = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     rollNo,
-                    subjectName,
+                    subjectName: selectedSubject, 
                     type,
                     fromDate: startDate.toISOString(),
                     toDate: endDate.toISOString()
@@ -124,7 +150,7 @@ const Dashboard = () => {
                 total: data.total,
                 percentage: data.total > 0 ? Math.round((data.present / data.total) * 100) : 0
             })
-            toast.success("Attendance data fetched successfully!")
+            toast.success("Attendance fetched successfully!")
         } catch (err) {
             const error = err as Error
             console.error("Attendance fetch error:", error)
@@ -134,6 +160,9 @@ const Dashboard = () => {
             setLoading(false)
         }
     }
+
+
+
 
     const formatDate = (date: Date | null) => {
         return date ? date.toLocaleDateString('en-US', {
@@ -147,7 +176,7 @@ const Dashboard = () => {
         return attendanceData ? attendanceData.percentage : 0
     }, [attendanceData])
 
-    const isFormValid = rollNo && subjectName && type && startDate && endDate && startDate <= endDate
+    const isFormValid = rollNo && selectedSubject && type && startDate && endDate && startDate <= endDate
 
     return (
         <div>
@@ -196,13 +225,18 @@ const Dashboard = () => {
                     <div className="mb-6">
                         <label className="block text-sm font-medium text-purple-100 mb-2">Subject/Lab Name</label>
                         <motion.div whileHover={{ scale: 1.01 }}>
-                            <input
-                                type="text"
-                                value={subjectName}
+                            <select
+                                value={selectedSubject}
                                 onChange={handleSubjectChange}
                                 className="w-full px-4 py-3 bg-purple-900/30 border border-purple-700/50 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-purple-400"
-                                placeholder="Enter subject name"
-                            />
+                            >
+                                <option value="">Select a subject</option>
+                                {subjectNames.map((name: string) => (
+                                    <option value={name} key={name}>
+                                        {name}
+                                    </option>
+                                ))}
+                            </select>
                         </motion.div>
                     </div>
                     {/* Date Selection */}
@@ -391,7 +425,7 @@ const Dashboard = () => {
                                 </div>
                                 <p className="mt-2 text-sm text-purple-100">
                                     {percentage >= 75
-                                        ? "🎉 Excellent! You're meeting the 75% criteria!"
+                                        ? "🎉 Excellent! You're meeting the 75% criteria!, you are eligible for paper 😊"
                                         : percentage >= 50
                                             ? "👍 You're doing okay, but aim for 75% to be safe."
                                             : "⚠️ Low attendance! Consider attending more classes."}
@@ -407,13 +441,13 @@ const Dashboard = () => {
                             animate={{ opacity: 1 }}
                             className="mt-8 flex flex-col items-center justify-center p-6"
                         >
-                            <div className="w-32 h-32 relative">
+                            <div className="w-44 h-44 relative">
                                 <Image
                                     priority
                                     src="/floss.gif"
                                     alt="loading"
-                                    width={200}
-                                    height={200}
+                                    width={300}
+                                    height={300}
                                     className="object-contain"
                                 />
                             </div>
