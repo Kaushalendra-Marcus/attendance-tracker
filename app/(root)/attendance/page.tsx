@@ -176,15 +176,40 @@ const AttendanceMarker = () => {
     }, [records, rollNo, selectedDate]);
 
     return (
-        <div>
+        <div className="relative min-h-screen overflow-hidden bg-black">
+            
             
 
+            {/* Grid overlay */}
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
-            <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-            </div>
+
+            {[...Array(50)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute rounded-full"
+                    initial={{
+                        x: Math.random() * 100,
+                        y: Math.random() * 100,
+                        width: Math.random() * 10 + 1,
+                        height: Math.random() * 10 + 1,
+                        background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 255, ${Math.random() * 0.5 + 0.1})`,
+                        filter: `blur(${Math.random() * 2}px)`,
+                    }}
+                    animate={{
+                        y: [null, Math.random() * 200 - 100],
+                        x: [null, Math.random() * 200 - 100],
+                        opacity: [0.1, 1, 0.1],
+                    }}
+                    transition={{
+                        duration: Math.random() * 20 + 10,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut"
+                    }}
+                />
+            ))}
 
             <Navigation />
 
@@ -268,14 +293,14 @@ const AttendanceMarker = () => {
                     
                     <motion.div
                         className="absolute bottom-20"
-                        animate={{ rotate: 300 }}
+                        animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                     >
                         <div className="w-12 h-12 rounded-full border-4 border-purple-400 border-t-transparent" />
                     </motion.div>
                 </motion.div>
             )}
-            <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
+            <div className="min-h-screen">
                 <main className="p-6">
                     <div className="max-w-4xl mx-auto">
 

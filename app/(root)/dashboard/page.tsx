@@ -179,9 +179,43 @@ const Dashboard = () => {
     const isFormValid = rollNo && selectedSubject && type && startDate && endDate && startDate <= endDate
 
     return (
-        <div>
+        <div className="relative min-h-screen overflow-hidden bg-black">
             <Navigation />
-            <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 p-4">
+            
+                        
+                        
+            
+                        {/* Grid overlay */}
+                        <div className="absolute inset-0">
+                            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+                        </div>
+            
+                        {[...Array(50)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute rounded-full"
+                                initial={{
+                                    x: Math.random() * 100,
+                                    y: Math.random() * 100,
+                                    width: Math.random() * 10 + 1,
+                                    height: Math.random() * 10 + 1,
+                                    background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 255, ${Math.random() * 0.5 + 0.1})`,
+                                    filter: `blur(${Math.random() * 2}px)`,
+                                }}
+                                animate={{
+                                    y: [null, Math.random() * 200 - 100],
+                                    x: [null, Math.random() * 200 - 100],
+                                    opacity: [0.1, 1, 0.1],
+                                }}
+                                transition={{
+                                    duration: Math.random() * 20 + 10,
+                                    repeat: Infinity,
+                                    repeatType: "reverse",
+                                    ease: "easeInOut"
+                                }}
+                            />
+                        ))}
+            <div className="min-h-screen bg-gradient-to-br  p-4">
 
                 <ToastContainer
                     position="top-center"
@@ -195,6 +229,9 @@ const Dashboard = () => {
                     transition={{ duration: 0.5 }}
                     className="max-w-4xl min-h-screen mx-auto bg-purple-900/20 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-purple-700/50 p-6"
                 >
+                    <div className="absolute inset-0">
+                            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+                        </div>
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold text-white mb-2">Attendance Analytics</h1>
                         <p className="text-purple-200">Track your class attendance percentage</p>
@@ -203,7 +240,7 @@ const Dashboard = () => {
                     {/* Profile Card */}
                     <motion.div
                         whileHover={{ scale: 1.01 }}
-                        className="bg-purple-800/30 backdrop-blur-sm border border-purple-700/50 rounded-xl p-6 mb-8"
+                        className=" backdrop-blur-sm rounded-xl p-6 mb-8"
                     >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-purple-100">
                             <div className="flex items-center gap-3">
@@ -404,7 +441,7 @@ const Dashboard = () => {
                                         cx="18"
                                         cy="18"
                                         r="15.9"
-                                        stroke="#4c1d95"
+                                        stroke="#FF0000"
                                         strokeWidth="3"
                                         fill="none"
                                     />
@@ -412,7 +449,7 @@ const Dashboard = () => {
                                         cx="18"
                                         cy="18"
                                         r="15.9"
-                                        stroke="#10b981"
+                                        stroke="#009000"
                                         strokeWidth="3"
                                         fill="none"
                                         strokeLinecap="round"

@@ -110,7 +110,7 @@ const TimetablePage = () => {
 
                     <motion.div
                         className="absolute bottom-20"
-                        animate={{ rotate: 300 }}
+                        animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                     >
                         <div className="w-12 h-12 rounded-full border-4 border-purple-400 border-t-transparent" />
@@ -151,7 +151,7 @@ const TimetablePage = () => {
                             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-semibold shadow-lg shadow-purple-500/20"
                         >
                             <FiEdit2 />
-                            <Link href="/timetable/create">Edit Timetable</Link>
+                            <Link href="/timetable/edit">Edit Timetable</Link>
                         </motion.div>
                     </motion.div>
 

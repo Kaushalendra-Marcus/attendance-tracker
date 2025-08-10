@@ -192,7 +192,7 @@ const Page = () => {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handleRemovePeriod(index)}
-                          className="text-purple-300 hover:text-white p-2"
+                          className="text-red-600 hover:text-white p-2"
                         >
                           <FiTrash2 />
                         </motion.button>

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 const Footer = () => {
     return (
         <footer className="relative bg-black/30 backdrop-blur-xl border-t border-white/10 overflow-hidden">
-            
+
             <div className="absolute inset-0">
                 <motion.div
                     className="absolute -top-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"
@@ -39,7 +39,7 @@ const Footer = () => {
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
 
-            
+
             {[...Array(20)].map((_, i) => (
                 <motion.div
                     key={i}
@@ -122,7 +122,7 @@ const Footer = () => {
                         ))}
                     </motion.div>
 
-                    
+
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -154,6 +154,37 @@ const Footer = () => {
                                     <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
                                 </svg>
 
+                            </motion.button>
+                        </Link>
+                        <Link href="#" className='cursor-pointer'>
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="relative p-3 cursor-pointer rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-purple-400/50 transition-all duration-300 group"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (navigator.share) {
+                                        // Use Web Share API if available (mobile devices)
+                                        navigator.share({
+                                            title: 'Check out myAttendance',
+                                            text: 'I found an app that can track your attendance of each subject/lab, Checkout now 👇👇',
+                                            url: window.location.href,
+                                        }).catch(console.error);
+                                    } else {
+                                        const shareUrl = `https://api.whatsapp.com/send?text=Check out my timetable: ${encodeURIComponent(window.location.href)}`;
+                                        window.open(shareUrl, '_blank', 'width=600,height=400');
+                                    }
+                                }}
+                            >
+                                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
+                                <svg
+                                    className="w-5 h-5 text-purple-300 group-hover:text-white transition-colors"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
+                                </svg>
                             </motion.button>
                         </Link>
                     </motion.div>
