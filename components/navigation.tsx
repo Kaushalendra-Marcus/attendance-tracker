@@ -143,8 +143,8 @@ export const Navigation = () => {
           initial={{
             x: Math.random() * 100,
             y: Math.random() * 100,
-            width: Math.random() * 2 + 1,
-            height: Math.random() * 2 + 1,
+            width: Math.random() * 10 + 1,
+            height: Math.random() * 10 + 1,
             background: `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.3 + 0.1})`,
           }}
           animate={{

@@ -119,7 +119,7 @@ const Dashboard = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     rollNo,
-                    subjectName: selectedSubject, 
+                    subjectName: selectedSubject,
                     type,
                     fromDate: startDate.toISOString(),
                     toDate: endDate.toISOString()
@@ -228,7 +228,7 @@ const Dashboard = () => {
                             <select
                                 value={selectedSubject}
                                 onChange={handleSubjectChange}
-                                className="w-full px-4 py-3 bg-purple-900/30 border border-purple-700/50 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-purple-400"
+                                className="w-full px-4 py-3 bg-purple-900/90 border border-purple-700/70 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-purple-400"
                             >
                                 <option value="">Select a subject</option>
                                 {subjectNames.map((name: string) => (
@@ -269,7 +269,7 @@ const Dashboard = () => {
                                             onChange={(value) => handleDateSelect(value, 'start')}
                                             value={startDate}
                                             maxDate={endDate || undefined}
-                                            className="border-0 bg-purple-900 text-white"
+                                            className="border-0 bg-purple-900 text-white "
                                         />
                                     </motion.div>
                                 )}
@@ -376,61 +376,73 @@ const Dashboard = () => {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-8 p-6 bg-purple-800/20 rounded-lg border border-purple-700/50 backdrop-blur-sm"
+                            className="mt-8 p-6 bg-purple-900/30 backdrop-blur-sm border border-purple-700/50 rounded-2xl"
                         >
-                            <h2 className="text-xl font-semibold text-white mb-4">Attendance Results</h2>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <motion.div
-                                    whileHover={{ scale: 1.03 }}
-                                    className="bg-purple-900/40 p-4 rounded-lg border border-purple-700/50 shadow-sm"
-                                >
-                                    <p className="text-sm text-purple-200">Present</p>
-                                    <p className="mt-2 text-2xl font-bold text-green-400">{attendanceData.present}</p>
-                                </motion.div>
-
-                                <motion.div
-                                    whileHover={{ scale: 1.03 }}
-                                    className="bg-purple-900/40 p-4 rounded-lg border border-purple-700/50 shadow-sm"
-                                >
-                                    <p className="text-sm text-purple-200">Total Classes</p>
-                                    <p className="mt-2 text-2xl font-bold text-blue-400">{attendanceData.total}</p>
-                                </motion.div>
-
-                                <motion.div
-                                    whileHover={{ scale: 1.03 }}
-                                    className="bg-purple-900/40 p-4 rounded-lg border border-purple-700/50 shadow-sm"
-                                >
-                                    <p className="text-sm text-purple-200">Percentage</p>
-                                    <p className="mt-2 text-2xl font-bold text-purple-300">{percentage}%</p>
-                                </motion.div>
+                            {/* stats row */}
+                            <div className="flex justify-around text-center mb-6">
+                                {[
+                                    { label: "Present", value: attendanceData.present },
+                                    { label: "Total", value: attendanceData.total },
+                                ].map((stat, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ y: 20 }}
+                                        animate={{ y: 0 }}
+                                        transition={{ delay: 0.2 + i * 0.1 }}
+                                        className="flex flex-col"
+                                    >
+                                        <span className="text-3xl font-bold text-white">{stat.value}</span>
+                                        <span className="text-sm text-purple-300">{stat.label}</span>
+                                    </motion.div>
+                                ))}
                             </div>
 
-                            {/* Progress Bar */}
-                            <div className="mt-6">
-                                <div className="flex justify-between mb-1">
-                                    <span className="text-sm font-medium text-purple-200">Attendance Progress</span>
-                                    <span className="text-sm font-medium text-white">{percentage}%</span>
-                                </div>
-                                <div className="w-full bg-purple-900/40 rounded-full h-2.5">
-                                    <div
-                                        className={`h-2.5 rounded-full ${percentage >= 75
-                                            ? 'bg-green-500'
-                                            : percentage >= 50
-                                                ? 'bg-yellow-400'
-                                                : 'bg-red-400'
-                                            }`}
-                                        style={{ width: `${percentage}%` }}
-                                    ></div>
-                                </div>
-                                <p className="mt-2 text-sm text-purple-100">
-                                    {percentage >= 75
-                                        ? "🎉 Excellent! You're meeting the 75% criteria!, you are eligible for paper 😊"
-                                        : percentage >= 50
-                                            ? "👍 You're doing okay, but aim for 75% to be safe."
-                                            : "⚠️ Low attendance! Consider attending more classes."}
-                                </p>
+                            {/* simple circle bar */}
+                            <div className="flex justify-center">
+                                <svg viewBox="0 0 36 36" className="w-32 h-32">
+                                    <circle
+                                        cx="18"
+                                        cy="18"
+                                        r="15.9"
+                                        stroke="#4c1d95"
+                                        strokeWidth="3"
+                                        fill="none"
+                                    />
+                                    <motion.circle
+                                        cx="18"
+                                        cy="18"
+                                        r="15.9"
+                                        stroke="#10b981"
+                                        strokeWidth="3"
+                                        fill="none"
+                                        strokeLinecap="round"
+                                        strokeDasharray="100"
+                                        strokeDashoffset={100 - percentage}
+                                        initial={{ strokeDashoffset: 100 }}
+                                        animate={{ strokeDashoffset: 100 - percentage }}
+                                        transition={{ duration: 1.2, ease: "easeOut" }}
+                                        transform="rotate(-90 18 18)"
+                                    />
+                                    <text
+                                        x="18"
+                                        y="22"
+                                        textAnchor="middle"
+                                        className="fill-white text-[10px] font-bold text-center"
+                                    >
+                                        {percentage}%
+                                    </text>
+                                </svg>
                             </div>
+
+                            {/* status pill */}
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
+                                className="mt-4 text-center text-sm font-semibold"
+                            >
+                                {percentage >= 75 ? "🎉 Excellent! You're meeting the 75% criteria!, you are eligible for paper 😊" : percentage >= 50 ? "👍 Close" : "⚠️ Need more classes"}
+                            </motion.div>
                         </motion.div>
                     )}
 
@@ -441,13 +453,13 @@ const Dashboard = () => {
                             animate={{ opacity: 1 }}
                             className="mt-8 flex flex-col items-center justify-center p-6"
                         >
-                            <div className="w-44 h-44 relative">
+                            <div className="w-49 h-49 relative">
                                 <Image
                                     priority
-                                    src="/floss.gif"
+                                    src="/floss_loading.gif"
                                     alt="loading"
-                                    width={300}
-                                    height={300}
+                                    width={400}
+                                    height={400}
                                     className="object-contain"
                                 />
                             </div>

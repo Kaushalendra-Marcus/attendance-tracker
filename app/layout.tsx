@@ -5,8 +5,6 @@ import { Providers } from "./context/provider";
 import Oneko from "@/components/oneko";
 import { Analytics } from "@vercel/analytics/next";
 import InstallPrompt from "@/components/install";
-
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -32,11 +30,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head /> {/* ✅ Important for metadata injection */}
+      <head /> 
       <body className={inter.className}>
         <Providers>
           <Oneko />
-          <InstallPrompt />
+          <InstallPrompt /> 
           {children}
           <Analytics />
         </Providers>

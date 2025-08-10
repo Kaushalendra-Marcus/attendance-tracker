@@ -1,7 +1,7 @@
 "use client"
 import { useEffect } from 'react'
 
-const Oneko = () => {
+const OnekoCat = () => {
     useEffect(() => {
         const script = document.createElement("script")
         script.src = '/oneko.js'
@@ -14,4 +14,4 @@ const Oneko = () => {
     return null
 }
 
-export default Oneko
+export default OnekoCat

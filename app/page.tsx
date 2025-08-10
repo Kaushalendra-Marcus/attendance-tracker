@@ -10,7 +10,7 @@ import { useUser } from "@/app/context/useContext";
 
 export default function Home() {
   const [showHome, setShowHome] = useState(false);
-  const { rollNo } = useUser(); // ✅ using context
+  const { rollNo } = useUser(); 
   const router = useRouter();
 
   useEffect(() => {

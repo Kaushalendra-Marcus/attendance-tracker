@@ -64,8 +64,8 @@ export const Hero = ({ stats = [] }: HeroProps) => {
                     initial={{
                         x: Math.random() * 100,
                         y: Math.random() * 100,
-                        width: Math.random() * 4 + 1,
-                        height: Math.random() * 4 + 1,
+                        width: Math.random() * 10 + 1,
+                        height: Math.random() * 10 + 1,
                         background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 255, ${Math.random() * 0.5 + 0.1})`,
                         filter: `blur(${Math.random() * 2}px)`,
                     }}
@@ -174,7 +174,24 @@ export const Hero = ({ stats = [] }: HeroProps) => {
                                 href="/about-us"
                                 className="text-purple-200 hover:text-white font-semibold text-lg flex items-center gap-2 transition-colors duration-300"
                             >
-                                Learn more 
+                                How to Use
+                                <motion.span
+                                    animate={{ x: [0, 5, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity }}
+                                >
+                                    →
+                                </motion.span>
+                            </Link>
+                        </motion.div>
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <Link
+                                href="/contact-us"
+                                className="text-purple-200 hover:text-white font-semibold text-lg flex items-center gap-2 transition-colors duration-300"
+                            >
+                                Learn more
                                 <motion.span
                                     animate={{ x: [0, 5, 0] }}
                                     transition={{ duration: 1.5, repeat: Infinity }}

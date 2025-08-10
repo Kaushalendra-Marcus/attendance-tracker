@@ -262,6 +262,7 @@ const AttendanceMarker = () => {
                         >
                             Escaping Professor…
                         </motion.h2>
+                        <p>Loading Subjects/Lab...</p>
                     </motion.div>
 
                     
