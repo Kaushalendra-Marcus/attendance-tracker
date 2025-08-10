@@ -181,40 +181,42 @@ const Dashboard = () => {
     return (
         <div className="relative min-h-screen overflow-hidden bg-black">
             <Navigation />
-            
-                        
-                        
-            
-                        {/* Grid overlay */}
-                        <div className="absolute inset-0">
-                            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-                        </div>
-            
-                        {[...Array(50)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute rounded-full"
-                                initial={{
-                                    x: Math.random() * 100,
-                                    y: Math.random() * 100,
-                                    width: Math.random() * 10 + 1,
-                                    height: Math.random() * 10 + 1,
-                                    background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 255, ${Math.random() * 0.5 + 0.1})`,
-                                    filter: `blur(${Math.random() * 2}px)`,
-                                }}
-                                animate={{
-                                    y: [null, Math.random() * 200 - 100],
-                                    x: [null, Math.random() * 200 - 100],
-                                    opacity: [0.1, 1, 0.1],
-                                }}
-                                transition={{
-                                    duration: Math.random() * 20 + 10,
-                                    repeat: Infinity,
-                                    repeatType: "reverse",
-                                    ease: "easeInOut"
-                                }}
-                            />
-                        ))}
+
+
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+            </div>
+
+            {/* Grid overlay */}
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+            </div>
+
+            {[...Array(50)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute rounded-full"
+                    initial={{
+                        x: Math.random() * 100,
+                        y: Math.random() * 100,
+                        width: Math.random() * 10 + 1,
+                        height: Math.random() * 10 + 1,
+                        background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 255, ${Math.random() * 0.5 + 0.1})`,
+                        filter: `blur(${Math.random() * 2}px)`,
+                    }}
+                    animate={{
+                        y: [null, Math.random() * 200 - 100],
+                        x: [null, Math.random() * 200 - 100],
+                        opacity: [0.1, 1, 0.1],
+                    }}
+                    transition={{
+                        duration: Math.random() * 20 + 10,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut"
+                    }}
+                />
+            ))}
             <div className="min-h-screen bg-gradient-to-br  p-4">
 
                 <ToastContainer
@@ -229,9 +231,6 @@ const Dashboard = () => {
                     transition={{ duration: 0.5 }}
                     className="max-w-4xl min-h-screen mx-auto bg-purple-900/20 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-purple-700/50 p-6"
                 >
-                    <div className="absolute inset-0">
-                            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-                        </div>
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold text-white mb-2">Attendance Analytics</h1>
                         <p className="text-purple-200">Track your class attendance percentage</p>
