@@ -35,34 +35,91 @@ const TimetablePage = () => {
         fetchTimeTable()
     }, [router, rollNo, branch])
 
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-black">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="text-4xl text-purple-400 drop-shadow-purple"
-                >
-                    <FiLoader />
-                </motion.div>
-            </div>
-        )
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-black">
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
-            
-
-            
-           
 
             <Navigation />
+            {loading && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 flex items-center justify-center z-20"
+                >
 
+                    {[...Array(30)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute rounded-full bg-purple-300/30"
+                            initial={{
+                                x: Math.random() * 100,
+                                y: Math.random() * 100,
+                                width: Math.random() * 4 + 2,
+                                height: Math.random() * 4 + 2,
+                            }}
+                            animate={{
+                                y: [null, Math.random() * 100 - 50],
+                                opacity: [0.2, 1, 0.2],
+                            }}
+                            transition={{
+                                duration: Math.random() * 4 + 3,
+                                repeat: Infinity,
+                                repeatType: "reverse",
+                                ease: "easeInOut",
+                            }}
+                        />
+                    ))}
+
+
+                    <motion.div
+                        animate={{ y: [0, -15, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                        className="relative"
+                    >
+
+                        <motion.div
+                            animate={{ rotate: [0, 15, -15, 0] }}
+                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                            className="text-7xl mb-4"
+                        >
+                            🏃‍♂️
+                        </motion.div>
+
+
+                        <motion.div
+                            animate={{ x: [-2, 2, -2] }}
+                            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-5xl opacity-60"
+                        >
+                            👨‍🏫
+                        </motion.div>
+
+                        <motion.h2
+                            animate={{ opacity: [1, 0.6, 1] }}
+                            transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                            className="text-white text-2xl font-bold tracking-wider drop-shadow-lg"
+                        >
+                            Escaping Professor…
+                        </motion.h2>
+                    </motion.div>
+
+
+                    <motion.div
+                        className="absolute bottom-20"
+                        animate={{ rotate: 300 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    >
+                        <div className="w-12 h-12 rounded-full border-4 border-purple-400 border-t-transparent" />
+                    </motion.div>
+                </motion.div>
+            )}
             <main className="relative z-10 p-6">
                 <div className="max-w-7xl mx-auto space-y-14">
-                    
+
                     <motion.div
                         initial={{ opacity: 0, y: -30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -106,8 +163,8 @@ const TimetablePage = () => {
                         className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
                     >
                         <div className="absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-                    </div>
+                            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+                        </div>
                         <div className="flex items-center gap-3 mb-6">
                             <FiCalendar className="text-2xl text-purple-300" />
                             <h2 className="text-2xl font-bold text-white">Class Schedule</h2>

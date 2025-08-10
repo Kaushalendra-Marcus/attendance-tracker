@@ -3,7 +3,8 @@ import { useUser } from "@/app/context/useContext"
 import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState } from "react"
+import Image from "next/image"
+import { useCallback, useEffect, useState } from "react"
 import Calendar from 'react-calendar'
 import { Value } from "react-calendar/dist/shared/types.js"
 import { FiCheck, FiX, FiCalendar, FiUser, FiHash, FiBook, FiSave, FiRotateCw } from "react-icons/fi"
@@ -38,62 +39,102 @@ type TimetableResponse = {
 
 const AttendanceMarker = () => {
     const [showCalendar, setShowCalendar] = useState(false)
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const [dayName, setDayName] = useState("")
     const [subjects, setSubjects] = useState<Subject[]>([])
     const [labs, setLabs] = useState<Lab[]>([])
     const { name, rollNo, branch } = useUser()
     const [records, setRecords] = useState<SubjectRecord[]>([])
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
-    const handleDateChange = (value: Value) => {
-        if (value instanceof Date) {
-            const date = value as Date
-            setSelectedDate(date)
-            setShowCalendar(false)
-            const Name = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
-            setDayName(Name)
+    const fetchExistingAttendance = useCallback(async (dateStr: string) => {
+        if (!rollNo) return [];
+        try {
+            const res = await fetch(`/api/attendance?rollNo=${rollNo}&date=${dateStr}`)
+            if (!res.ok) return []
+            const data = await res.json()
+            return data.data || []
+        } catch (err) {
+            console.error("Failed to fetch attendance:", err)
+            toast.error("Failed to load attendance data")
+            return []
         }
-    }
+    }, [rollNo]);
 
-    useEffect(() => {
-        if (!rollNo || !branch || !dayName) return;
+    const fetchTimetableAndAttendance = useCallback(async (date: Date) => {
+        if (!rollNo || !branch) return;
 
-        const fetchTimeTable = async () => {
-            try {
-                const res = await fetch(`/api/timetable?rollNo=${rollNo}&branch=${branch}`)
-                if (!res.ok) throw new Error("Not Found")
+        setIsLoading(true)
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+        setDayName(dayName)
 
-                const data: TimetableResponse = await res.json()
-                const dayObj = data.data.days.find((d: Day) => d.day.toLowerCase() === dayName)
+        try {
+            // 1. Fetch timetable
+            const timetableRes = await fetch(`/api/timetable?rollNo=${rollNo}&branch=${branch}`)
+            if (!timetableRes.ok) throw new Error("Failed to fetch timetable")
 
-                if (dayObj) {
-                    const allSubjects = dayObj.subjects || []
-                    const onlySubjects = allSubjects.filter((item: Subject) => item.type === "subject")
-                    const onlyLabs = allSubjects.filter((item: Lab) => item.type === "lab")
+            const timetableData: TimetableResponse = await timetableRes.json()
+            const dayObj = timetableData.data.days.find(d => d.day.toLowerCase() === dayName)
 
-                    setSubjects(onlySubjects)
-                    setLabs(onlyLabs)
-
-                    const initialRecords = allSubjects.map((item: Subject | Lab) => ({
-                        name: item.name,
-                        type: item.type,
-                        isPresent: false
-                    }))
-                    setRecords(initialRecords)
-                } else {
-                    setSubjects([])
-                    setLabs([])
-                    setRecords([])
-                }
-            } catch (err) {
-                console.error("Failed to fetch timetable:", err)
+            if (!dayObj) {
+                setSubjects([])
+                setLabs([])
+                setRecords([])
+                toast.warning("No classes scheduled for this day")
+                return
             }
-        }
-        fetchTimeTable()
-    }, [rollNo, branch, dayName])
 
-    const toggleAttendance = (name: string, type: string) => {
+            const allSubjects = dayObj.subjects || []
+
+            // 2. Format date for API (YYYY-MM-DD) in IST
+            const offsetIST = 5.5 * 60 * 60 * 1000
+            const istDate = new Date(date.getTime() + offsetIST)
+            const dateStr = istDate.toISOString().split("T")[0]
+
+            // 3. Fetch existing attendance
+            const existingAttendance = await fetchExistingAttendance(dateStr)
+
+            // 4. Merge data
+            const mergedRecords = allSubjects.map(subject => {
+                const existingRecord = existingAttendance.find(
+                    r => r.name === subject.name && r.type === subject.type
+                )
+                return {
+                    name: subject.name,
+                    type: subject.type,
+                    isPresent: existingRecord ? existingRecord.isPresent : false
+                }
+            })
+
+            setRecords(mergedRecords)
+            setSubjects(allSubjects.filter(item => item.type === "subject"))
+            setLabs(allSubjects.filter(item => item.type === "lab"))
+
+        } catch (err) {
+            console.error("Error handling date change:", err)
+            toast.error("Failed to load timetable data")
+        } finally {
+            setIsLoading(false)
+        }
+    }, [branch, fetchExistingAttendance, rollNo]);
+
+    // Initialize with current date
+    useEffect(() => {
+        if (rollNo && branch) {
+            fetchTimetableAndAttendance(new Date())
+        }
+    }, [rollNo, branch, fetchTimetableAndAttendance])
+
+    const handleDateChange = useCallback(async (value: Value) => {
+        if (!(value instanceof Date)) return;
+        setSelectedDate(value)
+        setShowCalendar(false)
+        await fetchTimetableAndAttendance(value)
+    }, [fetchTimetableAndAttendance]);
+
+    // Toggle attendance
+    const toggleAttendance = useCallback((name: string, type: string) => {
         setRecords(prevRecords =>
             prevRecords.map(record =>
                 record.name === name && record.type === type
@@ -101,18 +142,18 @@ const AttendanceMarker = () => {
                     : record
             )
         )
-    }
+    }, []);
 
-    const handleSubmit = async () => {
-        if (!selectedDate || !rollNo) return;
+    // Handle submit
+    const handleSubmit = useCallback(async () => {
+        if (!selectedDate || !rollNo) return
 
         setIsSubmitting(true)
         try {
-            const offsetIST = 5.5 * 60 * 60 * 1000;
-            const istDate = new Date(selectedDate.getTime() + offsetIST);
-            const dateStr = istDate.toISOString().split("T")[0];
-            console.log("IST DATE IS", istDate);
-            console.log("STR DATE IS", dateStr);
+            const offsetIST = 5.5 * 60 * 60 * 1000
+            const istDate = new Date(selectedDate.getTime() + offsetIST)
+            const dateStr = istDate.toISOString().split("T")[0]
+
             const response = await fetch("/api/attendance", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -121,26 +162,32 @@ const AttendanceMarker = () => {
                     presents: records,
                     date: dateStr
                 })
-            });
+            })
 
-            if (!response.ok) throw new Error("Failed to save attendance");
+            if (!response.ok) throw new Error("Failed to save attendance")
 
-            const result = await response.json();
-            toast.success("Attendace Marked Successfully")
+            toast.success("Attendance marked successfully!")
         } catch (error) {
-            console.error("Error saving attendance:", error);
-            toast.error("Attendance not marked, something error")
+            console.error("Error saving attendance:", error)
+            toast.error("Failed to mark attendance")
         } finally {
             setIsSubmitting(false)
         }
-    }
+    }, [records, rollNo, selectedDate]);
 
     return (
         <div>
+            
+
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+            </div>
+
             <Navigation />
+
             <ToastContainer
                 position="top-center"
                 autoClose={5000}
@@ -153,10 +200,84 @@ const AttendanceMarker = () => {
                 pauseOnHover
                 theme="dark"
             />
+            {isLoading && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 flex items-center justify-center"
+                >
+                    
+                    {[...Array(30)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute rounded-full bg-purple-300/30"
+                            initial={{
+                                x: Math.random() * 100,
+                                y: Math.random() * 100,
+                                width: Math.random() * 4 + 2,
+                                height: Math.random() * 4 + 2,
+                            }}
+                            animate={{
+                                y: [null, Math.random() * 100 - 50],
+                                opacity: [0.2, 1, 0.2],
+                            }}
+                            transition={{
+                                duration: Math.random() * 4 + 3,
+                                repeat: Infinity,
+                                repeatType: "reverse",
+                                ease: "easeInOut",
+                            }}
+                        />
+                    ))}
+
+                    
+                    <motion.div
+                        animate={{ y: [0, -15, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                        className="relative"
+                    >
+                        
+                        <motion.div
+                            animate={{ rotate: [0, 15, -15, 0] }}
+                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                            className="text-7xl mb-4"
+                        >
+                            🏃‍♂️
+                        </motion.div>
+
+                        
+                        <motion.div
+                            animate={{ x: [-2, 2, -2] }}
+                            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-5xl opacity-60"
+                        >
+                            👨‍🏫
+                        </motion.div>
+
+                        <motion.h2
+                            animate={{ opacity: [1, 0.6, 1] }}
+                            transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                            className="text-white text-2xl font-bold tracking-wider drop-shadow-lg"
+                        >
+                            Escaping Professor…
+                        </motion.h2>
+                    </motion.div>
+
+                    
+                    <motion.div
+                        className="absolute bottom-20"
+                        animate={{ rotate: 300 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    >
+                        <div className="w-12 h-12 rounded-full border-4 border-purple-400 border-t-transparent" />
+                    </motion.div>
+                </motion.div>
+            )}
             <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60">
                 <main className="p-6">
                     <div className="max-w-4xl mx-auto">
-                        
+
                         <motion.div
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -166,7 +287,7 @@ const AttendanceMarker = () => {
                             <p className="text-purple-200">Track your daily class presence</p>
                         </motion.div>
 
-                        
+
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -188,7 +309,7 @@ const AttendanceMarker = () => {
                             </div>
                         </motion.div>
 
-                        
+
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -220,7 +341,7 @@ const AttendanceMarker = () => {
                             </AnimatePresence>
                         </motion.div>
 
-                        
+
                         {selectedDate && (
                             <motion.div
                                 initial={{ opacity: 0 }}
@@ -343,7 +464,7 @@ const AttendanceMarker = () => {
                                     </motion.div>
                                 )}
 
-                                
+
                                 <motion.button
                                     onClick={handleSubmit}
                                     disabled={!records.length || isSubmitting}

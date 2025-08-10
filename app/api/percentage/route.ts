@@ -10,7 +10,7 @@ function getRangeDaysWithoutSundays(start: string, end: string): string[] {
 
   while (current <= to) {
     if (current.getDay() !== 0) {
-      dates.push(current.toISOString().split('T')[0]); // Store as YYYY-MM-DD
+      dates.push(current.toISOString().split('T')[0]);
     }
     current.setDate(current.getDate() + 1);
   }

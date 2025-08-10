@@ -112,7 +112,7 @@ export const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <nav className=" bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
+    <nav className=" bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
 
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
