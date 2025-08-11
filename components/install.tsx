@@ -73,9 +73,7 @@ export default function InstallPrompt() {
                     </div>
 
                     <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 w-72 shadow-2xl shadow-purple-500/30">
-                    <div className="absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-                    </div>
+                    
                     
 
                         <motion.button
