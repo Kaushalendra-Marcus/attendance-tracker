@@ -5,6 +5,7 @@ export const Branches = [
   "Electronics and Telecommunication Engineering",
   "Computer Science and Engineering",
   "Information Technology",
+  "Biochemical Engineering",
   "Food Technology",
   "Plastic Technology",
   "Leather Technology",
