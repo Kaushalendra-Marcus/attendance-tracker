@@ -1,4 +1,3 @@
-// next.config.ts
 import withPWA from '@ducanh2912/next-pwa'
 import type { NextConfig } from 'next'
 
@@ -6,7 +5,7 @@ const isDev = process.env.NODE_ENV === 'development'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  // Remove swcMinify as it's now automatic
   compiler: {
     removeConsole: !isDev
   },

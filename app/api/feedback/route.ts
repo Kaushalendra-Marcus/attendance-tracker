@@ -1,7 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-export async function POST(req: NextRequest) {
+// Define interfaces for better type safety
+interface MailAttachment {
+    filename: string;
+    content: Buffer;
+}
+
+interface MailOptions {
+    from: string;
+    to: string | undefined;
+    subject: string;
+    text: string;
+    attachments: MailAttachment[];
+}
+
+interface FeedbackResponse {
+    success: boolean;
+    message: string;
+}
+
+export async function POST(req: NextRequest): Promise<NextResponse<FeedbackResponse>> {
     const formData = await req.formData();
     
     const name = formData.get('name') as string;
@@ -11,7 +30,7 @@ export async function POST(req: NextRequest) {
 
     if (!name || !email || !feedback) {
         return NextResponse.json(
-            { message: "Name, email and feedback are required" }, 
+            { success: false, message: "Name, email and feedback are required" }, 
             { status: 400 }
         );
     }
@@ -25,7 +44,7 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        const mailOptions: any = {
+        const mailOptions: MailOptions = {
             from: email,
             to: process.env.EMAIL_USER,
             subject: `myAttendance Feedback from ${name}`,

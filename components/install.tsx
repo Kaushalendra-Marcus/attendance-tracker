@@ -28,7 +28,9 @@ export default function InstallPrompt() {
         if (!deferredPrompt) return
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
-        outcome === "accepted" && console.log("PWA installed ✨")
+        if (outcome === "accepted") {
+            console.log("PWA installed ✨")
+        }
         setShow(false)
     }
 

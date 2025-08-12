@@ -16,6 +16,8 @@ function getRangeDaysWithoutSundays(start: string, end: string): string[] {
   }
   return dates;
 }
+console.log(getRangeDaysWithoutSundays);
+
 
 function normalizeString(str: string) {
   return str.toLowerCase().replace(/\s+/g, '');

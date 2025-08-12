@@ -5,8 +5,6 @@ import { Navigation } from "@/components/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useUser } from "@/app/context/useContext";
 import InstallPrompt from "@/components/install";
 
 export default function Home() {

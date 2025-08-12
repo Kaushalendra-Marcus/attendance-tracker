@@ -39,7 +39,11 @@ const TimetablePage = () => {
                 const res = await fetch(`/api/timetable?rollNo=${rollNo}&branch=${branch}`)
                 if (!res.ok) throw new Error("Not Found")
                 const data = await res.json()
-                !data?.data?.days?.length ? router.push("/timetable/create") : setTimeTable(data)
+                if (!data?.data?.days?.length) {
+                    router.push("/timetable/create");
+                } else {
+                    setTimeTable(data);
+                }
             } catch {
                 router.push("/timetable/create")
             } finally {
