@@ -8,12 +8,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/app/context/useContext";
 import InstallPrompt from "@/components/install";
-import FeedbackBubble from "@/components/feedbackpopup";
 
 export default function Home() {
   const [showHome, setShowHome] = useState(false);
-  const { rollNo } = useUser();
-  const router = useRouter();
+
 
     useEffect(() => {
       // Only run on client side

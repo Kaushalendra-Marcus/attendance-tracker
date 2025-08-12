@@ -1,5 +1,4 @@
 "use client"
-import { useUser } from "@/app/context/useContext"
 import Feedback from "@/components/feedback"
 import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"

@@ -9,7 +9,6 @@ import Calendar from "react-calendar"
 import { Value } from "react-calendar/dist/shared/types.js"
 import { Navigation } from "@/components/navigation"
 import Footer from "@/components/footer"
-import { div } from "framer-motion/client"
 import { useRouter } from "next/navigation"
 
 type SubjectType = 'subject' | 'lab' | null

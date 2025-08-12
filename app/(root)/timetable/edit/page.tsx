@@ -67,6 +67,7 @@ const Page = () => {
         }
       } catch (error) {
         setMessage({ text: "Failed to load timetable", type: "error" });
+        console.log(error);
       } finally {
         setIsLoading(false);
       }

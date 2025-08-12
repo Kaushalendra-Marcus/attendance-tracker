@@ -45,6 +45,8 @@ export default function FeedbackPage() {
             }
         } catch (error) {
             setMessage("Failed to send feedback");
+            console.log(error);
+            
         } finally {
             setIsSending(false);
         }
