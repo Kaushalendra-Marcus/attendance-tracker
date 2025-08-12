@@ -4,9 +4,10 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import User from "./user"
 import UserMobile from "./UserMobile"
-import { FiHome, FiPieChart, FiCalendar, FiSettings, FiMenu, FiX, FiInfo,FiPhone } from "react-icons/fi"
+import { FiHome, FiPieChart, FiCalendar, FiSettings, FiMenu, FiX, FiInfo, FiPhone } from "react-icons/fi"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
+import { useUser } from "@/app/context/useContext"
 
 interface NavLinkProps {
   href: string
@@ -18,7 +19,7 @@ interface NavLinkProps {
 const NavLink = ({ href, onClick, children, icon: Icon }: NavLinkProps) => {
   const pathname = usePathname()
   const isActive = pathname === href
-  
+
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
@@ -51,12 +52,14 @@ const NavLink = ({ href, onClick, children, icon: Icon }: NavLinkProps) => {
 interface MobileNavigationProps {
   isOpen: boolean
   onClose: () => void
+  rollNo: string | null | undefined
 }
 const handleLogout = () => {
   localStorage.clear();
   window.location.href = "/sign-in";
 }
-const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => (
+
+const MobileNavigation = ({ isOpen, onClose, rollNo }: MobileNavigationProps) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div
@@ -94,13 +97,16 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => (
             className="mt-4"
           >
             <UserMobile />
-            <motion.button
-              onClick={handleLogout}
-              whileTap={{ scale: 0.95 }}
-              className="w-full text-left mt-4 text-sm font-semibold bg-black/80 text-white hover:text-white px-4 py-2 rounded-xl border-1 border-gray-800  hover:bg-red-600 transition-all duration-300"
-            >
-              Logout
-            </motion.button>
+            {rollNo && (
+              <motion.button
+                onClick={handleLogout}
+                whileTap={{ scale: 0.95 }}
+                className="w-full text-left mt-4 text-sm font-semibold bg-black/80 text-white hover:text-white px-4 py-2 rounded-xl border border-gray-800 hover:bg-red-600 transition-all duration-300"
+              >
+                Logout
+              </motion.button>
+            )}
+
           </motion.div>
         </div>
       </motion.div>
@@ -110,7 +116,7 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => (
 
 export const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
+  const { rollNo } = useUser()
   return (
     <nav className=" bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
 
@@ -222,13 +228,16 @@ export const Navigation = () => {
             >
               <User />
             </motion.div>
-            <motion.button
-              onClick={handleLogout}
-              whileTap={{ scale: 0.95 }}
-              className="text-sm font-semibold bg-transparent cursor-pointer text-white hover:text-white px-4 py-2 rounded-xl border-1 border-gray-800  hover:bg-red-600 transition-all duration-300"
-            >
-              Logout
-            </motion.button>
+            {rollNo && (
+              <motion.button
+                onClick={handleLogout}
+                whileTap={{ scale: 0.95 }}
+                className="text-sm font-semibold bg-transparent cursor-pointer text-white hover:text-white px-4 py-2 rounded-xl border border-gray-800 hover:bg-red-600 transition-all duration-300"
+              >
+                Logout
+              </motion.button>
+            )}
+
           </div>
 
           <div className="md:hidden ">
@@ -257,6 +266,7 @@ export const Navigation = () => {
       <MobileNavigation
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
+        rollNo={rollNo}
       />
     </nav>
   )

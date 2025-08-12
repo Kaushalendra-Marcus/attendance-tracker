@@ -35,7 +35,7 @@ export default function InstallPrompt() {
 
     useEffect(() => {
         if (show) {
-            const t = setTimeout(() => setShow(false), 80000)
+            const t = setTimeout(() => setShow(false), 10000)
             return () => clearTimeout(t)
         }
     }, [show])
@@ -73,9 +73,6 @@ export default function InstallPrompt() {
                     </div>
 
                     <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 w-72 shadow-2xl shadow-purple-500/30">
-                    
-                    
-
                         <motion.button
                             onClick={() => setShow(false)}
                             whileHover={{ rotate: 90, scale: 1.1 }}

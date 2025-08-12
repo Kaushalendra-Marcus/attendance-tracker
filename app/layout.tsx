@@ -4,7 +4,8 @@ import "./globals.css";
 import { Providers } from "./context/provider";
 import Oneko from "@/components/oneko";
 import { Analytics } from "@vercel/analytics/next";
-import InstallPrompt from "@/components/install";
+import FeedbackBubble from "@/components/feedbackpopup";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -30,11 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head /> 
+      <head />
       <body className={inter.className}>
         <Providers>
+          <FeedbackBubble />
           <Oneko />
-          <InstallPrompt /> 
           {children}
           <Analytics />
         </Providers>

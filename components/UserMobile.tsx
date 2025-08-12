@@ -1,9 +1,18 @@
 "use client"
 import { useUser } from "@/app/context/useContext"
+import Link from "next/link"
 
 const UserMobile = () => {
   const { name, rollNo, branch } = useUser()
-  
+  if (!name) {
+    return (
+      <Link href="/sign-in"
+        className="w-full text-left mt-4 text-sm font-semibold bg-black/80 text-white hover:text-white px-4 py-2 rounded-xl border border-gray-800 hover:bg-gradient-to-br from-purple-600/40 to-indigo-500/40 transition-all duration-300"
+      >
+        Sign In
+      </Link >
+    )
+  }
   return (
     <div className="w-full text-white bg-black/80 p-4 rounded-xl border-1 border-gray-800">
       <div className="flex items-center justify-between w-full">
@@ -18,7 +27,7 @@ const UserMobile = () => {
             <p className="text-xs font-medium text-purple-200">{rollNo} • {branch}</p>
           </div>
         </div>
-        
+
       </div>
     </div>
   )

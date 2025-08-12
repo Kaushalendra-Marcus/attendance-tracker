@@ -52,7 +52,7 @@ export const Hero = ({ stats = [] }: HeroProps) => {
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black/50 to-indigo-900/20" />
             </div>
 
-            {/* Grid overlay */}
+            
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>

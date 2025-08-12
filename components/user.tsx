@@ -4,12 +4,13 @@ import Link from "next/link"
 
 const User = () => {
   const { name, rollNo, branch } = useUser()
-  
+
   if (!name) {
     return (
-      <Link 
-        href="/sign-in" 
-        className="text-sm font-medium text-purple-200 hover:text-white px-3 py-2 rounded-md"
+      <Link
+        href="/sign-in"
+        className="w-full text-left mt-4 text-sm font-semibold bg-black/80 text-white hover:text-white px-4 py-2 rounded-xl border border-gray-800 hover:bg-gradient-to-br from-purple-600/40 to-indigo-500/40 transition-all duration-300"
+
       >
         Sign In
       </Link>

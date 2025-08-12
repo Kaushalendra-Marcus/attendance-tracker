@@ -1,19 +1,35 @@
 "use client";
 import { useUser } from "@/app/context/useContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiSave, FiChevronDown, FiTrash2 } from "react-icons/fi";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/footer";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [timetable, setTimetable] = useState<{ [key: string]: { name: string; type: string }[] | undefined }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { rollNo } = useUser();
-
+  const router = useRouter()
+  useEffect(() => {
+    const checkAuth = () => {
+      const storedData = localStorage.getItem("userData");
+      if (!storedData) {
+        router.push("/sign-up");
+      } else {
+        const { rollNo } = JSON.parse(storedData);
+        if (!rollNo) {
+          router.push("/sign-up");
+        }
+      }
+    };
+    const timer = setTimeout(checkAuth, 500);
+    return () => clearTimeout(timer);
+  }, [router]);
   const handleDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDay = e.target.value;
     setSelectedDay(newDay);
@@ -75,7 +91,7 @@ const Page = () => {
       });
 
       if (!response.ok) throw new Error("Failed to create timetable");
-      
+
       toast.success("Timetable created successfully!");
     } catch (err) {
       const error = err as Error;
@@ -87,11 +103,12 @@ const Page = () => {
 
   return (
     <div>
+      <Navigation />
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
-      
-      
+
+
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -104,8 +121,8 @@ const Page = () => {
         pauseOnHover
         theme="dark"
       />
-      
-      <Navigation />
+
+
       <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 p-6">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
