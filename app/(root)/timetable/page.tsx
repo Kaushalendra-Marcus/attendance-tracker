@@ -18,21 +18,6 @@ const TimetablePage = () => {
     const [loading, setLoading] = useState(true)
     const router = useRouter()
     useEffect(() => {
-        const checkAuth = () => {
-            const storedData = localStorage.getItem("userData");
-            if (!storedData) {
-                router.push("/sign-up");
-            } else {
-                const { rollNo } = JSON.parse(storedData);
-                if (!rollNo) {
-                    router.push("/sign-up");
-                }
-            }
-        };
-        const timer = setTimeout(checkAuth, 500);
-        return () => clearTimeout(timer);
-    }, [router]);
-    useEffect(() => {
         if (!rollNo || !branch) return
         const fetchTimeTable = async () => {
             try {

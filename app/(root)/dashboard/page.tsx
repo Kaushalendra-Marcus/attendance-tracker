@@ -9,7 +9,6 @@ import Calendar from "react-calendar"
 import { Value } from "react-calendar/dist/shared/types.js"
 import { Navigation } from "@/components/navigation"
 import Footer from "@/components/footer"
-import { useRouter } from "next/navigation"
 
 type SubjectType = 'subject' | 'lab' | null
 interface Subject {
@@ -39,22 +38,6 @@ const Dashboard = () => {
     const { name, rollNo, branch } = useUser()
     const [showStartCalendar, setShowStartCalendar] = useState(false)
     const [showEndCalendar, setShowEndCalendar] = useState(false)
-    const router = useRouter()
-    useEffect(() => {
-        const checkAuth = () => {
-            const storedData = localStorage.getItem("userData");
-            if (!storedData) {
-                router.push("/sign-up");
-            } else {
-                const { rollNo } = JSON.parse(storedData);
-                if (!rollNo) {
-                    router.push("/sign-up");
-                }
-            }
-        };
-        const timer = setTimeout(checkAuth, 500);
-        return () => clearTimeout(timer);
-    }, [router]);
     const handleSubjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedSubject(e.target.value)
     }

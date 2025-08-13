@@ -27,6 +27,8 @@ const Page = () => {
         }
       }
     };
+
+    // Wait 500ms to ensure auth check completes
     const timer = setTimeout(checkAuth, 500);
     return () => clearTimeout(timer);
   }, [router]);

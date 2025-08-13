@@ -156,7 +156,7 @@ export const Hero = ({ stats = [] }: HeroProps) => {
                             className="relative group"
                         >
                             <Link
-                                href={rollNo ? "/timetable" : "/sign-in"}
+                                href={rollNo ? "/timetable" : "/sign-up"}
                                 className="relative block px-8 py-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white font-bold text-lg shadow-2xl shadow-purple-500/25 transition-all duration-300 group-hover:shadow-purple-500/50"
                             >
                                 <span className="relative z-10">Get Started</span>

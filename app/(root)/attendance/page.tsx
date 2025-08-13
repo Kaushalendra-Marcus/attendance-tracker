@@ -3,7 +3,6 @@ import { useUser } from "@/app/context/useContext"
 import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 import Calendar from 'react-calendar'
 import { Value } from "react-calendar/dist/shared/types.js"
@@ -47,22 +46,6 @@ const AttendanceMarker = () => {
     const [records, setRecords] = useState<SubjectRecord[]>([])
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const router = useRouter()
-    useEffect(() => {
-        const checkAuth = () => {
-            const storedData = localStorage.getItem("userData");
-            if (!storedData) {
-                router.push("/sign-up");
-            } else {
-                const { rollNo } = JSON.parse(storedData);
-                if (!rollNo) {
-                    router.push("/sign-up");
-                }
-            }
-        };
-        const timer = setTimeout(checkAuth, 500);
-        return () => clearTimeout(timer);
-    }, [router]);
     const fetchExistingAttendance = useCallback(async (dateStr: string) => {
         if (!rollNo) return []
 
