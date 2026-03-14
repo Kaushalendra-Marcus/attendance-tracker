@@ -6,7 +6,10 @@ Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 
 ## Screenshots
 
-
+<img width="1752" height="968" alt="image" src="https://github.com/user-attachments/assets/b93e59f2-5297-4619-80a9-4f0455dcb142" />
+<img width="1272" height="873" alt="image" src="https://github.com/user-attachments/assets/317c9956-8d40-49c2-8446-cdca423a1596" />
+<img width="1223" height="822" alt="image" src="https://github.com/user-attachments/assets/af48de95-039b-4898-b64a-080704c5281a" />
+<img width="1222" height="866" alt="image" src="https://github.com/user-attachments/assets/33e742c8-e214-494c-a024-839b4df59cda" />
 
 ---
 
