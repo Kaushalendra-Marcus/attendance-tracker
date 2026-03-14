@@ -80,13 +80,13 @@ export default function GameLobby() {
                     <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
                         <h1 className="text-3xl font-black text-white">Quiz Battle</h1>
                         <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
-                            Create a room or join one — first to answer wins more points
+                            Create a room or join one - first to answer wins more points
                         </p>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                        {/* Left — Create/Join */}
+                        {/* Left - Create/Join */}
                         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card p-6">
 
                             {/* Tabs */}
@@ -110,7 +110,7 @@ export default function GameLobby() {
                                     <motion.div key="create" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-4">
                                         <div>
                                             <label className="block text-xs font-medium mb-2" style={{ color: "var(--text-muted)" }}>
-                                                Question Tags <span style={{ fontWeight: 400 }}>(optional — leave empty for all)</span>
+                                                Question Tags <span style={{ fontWeight: 400 }}>(optional - leave empty for all)</span>
                                             </label>
                                             {/* Tag pills */}
                                             {tags.length > 0 && (
@@ -188,7 +188,7 @@ export default function GameLobby() {
                             )}
                         </motion.div>
 
-                        {/* Right — Leaderboard */}
+                        {/* Right - Leaderboard */}
                         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <FiAward style={{ color: "var(--accent-indigo)" }} />
@@ -197,7 +197,7 @@ export default function GameLobby() {
 
                             {leaderboard.length === 0 ? (
                                 <p className="text-sm text-center py-8" style={{ color: "var(--text-muted)" }}>
-                                    No games played yet — be the first!
+                                    No games played yet - be the first!
                                 </p>
                             ) : (
                                 <div className="space-y-2">

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Branches } from "@/constants"
 import {
   FiLogIn, FiBook, FiHash, FiEdit2, FiX, FiCheck,
-  FiUser, FiCalendar, FiLoader, FiChevronDown, FiAlertCircle
+  FiCalendar, FiLoader, FiChevronDown, FiAlertCircle
 } from "react-icons/fi"
 
 /* ── Inline edit modal ─────────────────────────────────────── */

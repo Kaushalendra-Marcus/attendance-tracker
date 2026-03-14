@@ -31,7 +31,7 @@ const StepSubjects = ({
 }) => (
     <motion.div key="step1" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }}>
         <div className="mb-6">
-            <h2 className="text-lg font-black text-white mb-1">Step 1 — Your subjects</h2>
+            <h2 className="text-lg font-black text-white mb-1">Step 1 - Your subjects</h2>
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                 Add or remove subjects and labs. You&apos;ll assign them to days next.
             </p>
@@ -81,7 +81,7 @@ const StepSubjects = ({
                 disabled={subjects.filter(s => s.name.trim()).length === 0}
                 className="btn-primary flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-                Next — Assign to Days <FiArrowRight size={14} />
+                Next - Assign to Days <FiArrowRight size={14} />
             </button>
         </div>
     </motion.div>
@@ -112,7 +112,7 @@ const StepAssign = ({
     return (
         <motion.div key="step2" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }}>
             <div className="mb-6">
-                <h2 className="text-lg font-black text-white mb-1">Step 2 — Assign to days</h2>
+                <h2 className="text-lg font-black text-white mb-1">Step 2 - Assign to days</h2>
                 <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                     Tap subjects to toggle them on/off for each day.
                 </p>
@@ -174,7 +174,7 @@ const StepAssign = ({
                     {DAYS.filter(d => (assignments[d] || []).length > 0).map(d => (
                         <span key={d} className="text-xs px-2.5 py-1 rounded-full capitalize"
                             style={{ background: "rgba(34,197,94,0.12)", color: "#86efac", border: "1px solid rgba(34,197,94,0.25)" }}>
-                            {d} — {assignments[d].length} subjects
+                            {d} - {assignments[d].length} subjects
                         </span>
                     ))}
                 </div>

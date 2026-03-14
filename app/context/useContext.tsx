@@ -7,7 +7,7 @@ type UserData = {
   branch?:  string;
   year?:    string;
   college?: string;
-  userId?:  string;  // MongoDB _id — prevents rollno clash
+  userId?:  string;  // MongoDB _id - prevents rollno clash
   setUser:   (data: Partial<Omit<UserData, "setUser" | "clearUser">>) => void;
   clearUser: () => void;
 };
@@ -37,7 +37,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         if (p.college) setCollege(p.college);
         if (p.userId)  setUserId(p.userId);
       }
-    } catch (_) {}
+    } catch{}
   }, []);
 
   const setUser = (data: Partial<Omit<UserData, "setUser" | "clearUser">>) => {

@@ -101,7 +101,7 @@ export default function AppreciatePage() {
                     <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
                         <h1 className="text-3xl font-black text-white">Appreciate</h1>
                         <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
-                            Like your batchmates — top liked students on the board
+                            Like your batchmates - top liked students on the board
                         </p>
                     </motion.div>
 
@@ -147,7 +147,7 @@ export default function AppreciatePage() {
                                     >
                                         <div className="mt-4 pt-4 space-y-2" style={{ borderTop: "1px solid var(--border)" }}>
                                             {myLikes.length === 0 ? (
-                                                <p className="text-xs text-center py-2" style={{ color: "var(--text-muted)" }}>No likes yet — share your profile!</p>
+                                                <p className="text-xs text-center py-2" style={{ color: "var(--text-muted)" }}>No likes yet - share your profile!</p>
                                             ) : myLikes.map((l, i) => (
                                                 <div key={i} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
@@ -201,7 +201,7 @@ export default function AppreciatePage() {
 
                             {filtered.length === 0 && (
                                 <p className="text-center text-sm py-8" style={{ color: "var(--text-muted)" }}>
-                                    {search ? "No results found" : "No likes yet — be the first!"}
+                                    {search ? "No results found" : "No likes yet - be the first!"}
                                 </p>
                             )}
 

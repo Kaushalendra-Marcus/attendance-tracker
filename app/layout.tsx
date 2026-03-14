@@ -5,8 +5,8 @@ import Oneko from "@/components/oneko";
 import { Analytics } from "@vercel/analytics/next";
 import FeedbackBubble from "@/components/feedbackpopup";
 
-// ✅ FIX: Inter (Google Font) hataya — network pe block hoti thi, app crash hoti thi
-// System font stack use kar raha hai — fast + no network needed
+// ✅ FIX: Inter (Google Font) hataya - network pe block hoti thi, app crash hoti thi
+// System font stack use kar raha hai - fast + no network needed
 
 // ✅ FIX: themeColor metadata se viewport mein move kiya (Next.js 15 requirement)
 export const viewport: Viewport = {
@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      {/* ✅ System font — Inter jaisi dikhti hai, zero network calls */}
+      {/* ✅ System font - Inter jaisi dikhti hai, zero network calls */}
       <body style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <Providers>
           <FeedbackBubble />

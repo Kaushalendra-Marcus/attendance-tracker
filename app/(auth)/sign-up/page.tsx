@@ -68,7 +68,7 @@ export default function SignUpPage() {
   const isCustomBranch = branch === "Other (Custom)"
   const finalBranch    = isCustomBranch ? customBranch.trim() : branch
 
-  // Extract numeric year — "2nd Year" -> "2", "3rd" -> "3"
+  // Extract numeric year - "2nd Year" -> "2", "3rd" -> "3"
   const yearNum = year.replace(/\D/g, "").slice(0, 1)
 
   const handleSubmit = async (e: React.FormEvent) => {

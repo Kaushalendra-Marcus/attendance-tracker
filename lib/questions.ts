@@ -50,7 +50,7 @@ export const ALL_QUESTIONS: Question[] = [
     { id: 36, question: "Who invented the World Wide Web?", options: ["Bill Gates", "Steve Jobs", "Tim Berners-Lee", "Elon Musk"], answer: "Tim Berners-Lee", tags: ["#general", "#tech"] },
     { id: 37, question: "Which country invented zero?", options: ["China", "Greece", "India", "Egypt"], answer: "India", tags: ["#general"] },
     { id: 38, question: "Capital of Japan?", options: ["Osaka", "Kyoto", "Tokyo", "Hiroshima"], answer: "Tokyo", tags: ["#general"] },
-    { id: 39, question: "Speed of light approximately?", options: ["3 × 10⁸ m/s", "3 × 10⁶ m/s", "3 × 10¹⁰ m/s", "3 × 10⁴ m/s"], answer: "3 × 10⁸ m/s", tags: ["#general"] },
+    { id: 39, question: "Speed of light approximately?", options: ["3 �- 10⁸ m/s", "3 �- 10⁶ m/s", "3 �- 10¹⁰ m/s", "3 �- 10⁴ m/s"], answer: "3 �- 10⁸ m/s", tags: ["#general"] },
     { id: 40, question: "Which is the largest ocean?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], answer: "Pacific", tags: ["#general"] },
     { id: 41, question: "Full form of PDF?", options: ["Portable Document Format", "Print Document File", "Personal Data Format", "Printable Document Form"], answer: "Portable Document Format", tags: ["#general", "#tech"] },
     { id: 42, question: "Element with symbol 'Fe'?", options: ["Fluorine", "Iron", "Francium", "Fermium"], answer: "Iron", tags: ["#general"] },

@@ -100,7 +100,7 @@ const TimetablePage = () => {
     const [showShareModal, setShowShareModal] = useState(false)
     const router = useRouter()
 
-    // Extract numeric year — "2nd Year" -> "2", "3" -> "3"
+    // Extract numeric year - "2nd Year" -> "2", "3" -> "3"
     const yearNum = (year || "").replace(/\D/g, "").slice(0, 1)
 
     useEffect(() => {

@@ -45,7 +45,7 @@ const StepSubjects = ({
 }) => (
     <motion.div key="step1" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }}>
         <div className="mb-6">
-            <h2 className="text-lg font-black text-white mb-1">Step 1 — Add your subjects</h2>
+            <h2 className="text-lg font-black text-white mb-1">Step 1 - Add your subjects</h2>
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                 Add all subjects and labs you attend. You&apos;ll assign them to days next.
             </p>
@@ -94,7 +94,7 @@ const StepSubjects = ({
                 disabled={subjects.filter(s => s.name.trim()).length === 0}
                 className="btn-primary flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-                Next — Assign to Days <FiArrowRight size={14} />
+                Next - Assign to Days <FiArrowRight size={14} />
             </button>
         </div>
     </motion.div>
@@ -124,7 +124,7 @@ const StepAssign = ({
     return (
         <motion.div key="step2" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }}>
             <div className="mb-6">
-                <h2 className="text-lg font-black text-white mb-1">Step 2 — Assign to days</h2>
+                <h2 className="text-lg font-black text-white mb-1">Step 2 - Assign to days</h2>
                 <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                     Select which subjects happen on each day. Tap to toggle.
                 </p>
@@ -186,7 +186,7 @@ const StepAssign = ({
                     {DAYS.filter(d => (assignments[d] || []).length > 0).map(d => (
                         <span key={d} className="text-xs px-2.5 py-1 rounded-full capitalize"
                             style={{ background: "rgba(34,197,94,0.12)", color: "#86efac", border: "1px solid rgba(34,197,94,0.25)" }}>
-                            {d} — {assignments[d].length} subjects
+                            {d} - {assignments[d].length} subjects
                         </span>
                     ))}
                 </div>
@@ -230,7 +230,7 @@ const BrowseTab = ({
     const [expanded, setExpanded]       = useState<string | null>(null)
     const [copyingFrom, setCopyingFrom] = useState<string | null>(null)
 
-    // Extract year number for query — "2nd Year" -> "2", "3" -> "3"
+    // Extract year number for query - "2nd Year" -> "2", "3" -> "3"
     const yearNum = year.replace(/\D/g, "").slice(0, 1)
 
     const fetchTimetables = useCallback(async () => {
@@ -400,7 +400,7 @@ const Page = () => {
 
             if (!days.length) { toast.error("Assign at least one subject to a day"); return }
 
-            // Extract year number — "2nd Year" -> "2"
+            // Extract year number - "2nd Year" -> "2"
             const yearNum = (year || "").replace(/\D/g, "").slice(0, 1)
 
             const res = await fetch("/api/timetable/create", {
@@ -451,7 +451,7 @@ const Page = () => {
                         </p>
                     </motion.div>
 
-                    {/* Step indicator — only for manual flow */}
+                    {/* Step indicator - only for manual flow */}
                     {mode === "manual" && (
                         <div className="flex items-center gap-3 mb-6">
                             {[1, 2].map(n => (
@@ -508,7 +508,7 @@ const Page = () => {
                             </motion.div>
                         )}
 
-                        {/* Manual — step 1 */}
+                        {/* Manual - step 1 */}
                         {mode === "manual" && step === 1 && (
                             <StepSubjects
                                 subjects={subjects}
@@ -519,7 +519,7 @@ const Page = () => {
                             />
                         )}
 
-                        {/* Manual — step 2 */}
+                        {/* Manual - step 2 */}
                         {mode === "manual" && step === 2 && (
                             <StepAssign
                                 subjects={subjects}

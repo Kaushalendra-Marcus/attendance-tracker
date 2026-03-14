@@ -22,8 +22,8 @@ const sections = [
         iconBg: "rgba(34,197,94,0.12)", iconBorder: "rgba(34,197,94,0.25)",
         title: "3. User Responsibilities",
         items: [
-            "Account Security — You are responsible for maintaining confidentiality of your credentials and all activity under your account.",
-            "Data Accuracy — Ensure all attendance data entered is accurate and complies with applicable rules."
+            "Account Security - You are responsible for maintaining confidentiality of your credentials and all activity under your account.",
+            "Data Accuracy - Ensure all attendance data entered is accurate and complies with applicable rules."
         ]
     },
     {

@@ -58,7 +58,7 @@ export const Hero = () => {
                     </motion.h1>
 
                     <motion.p variants={fadeUp} className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                        Track every subject daily, calculate how many classes you can skip, share timetables with batchmates — all in one place.
+                        Track every subject daily, calculate how many classes you can skip, share timetables with batchmates - all in one place.
                     </motion.p>
 
                     <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
@@ -159,7 +159,7 @@ export const Hero = () => {
                         "Works for subjects + labs separately",
                         "Filter attendance by custom date range",
                         "Install on phone, works offline",
-                        "No app store needed — runs in browser",
+                        "No app store needed - runs in browser",
                     ].map((item, i) => (
                         <motion.div key={i} variants={fadeUp}
                             className="flex items-start gap-2.5 card p-3.5 text-sm"

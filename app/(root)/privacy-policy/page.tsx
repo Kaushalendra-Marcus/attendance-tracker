@@ -64,7 +64,7 @@ export default function PrivacyPolicy() {
                                 <div style={{ borderTop: "1px solid var(--border)" }} className="pt-4">
                                     <p className="text-sm font-semibold text-white mb-2">Usage Data</p>
                                     <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                                        We collect information about how you interact with the app, including which features you use and session frequency — solely to improve the experience.
+                                        We collect information about how you interact with the app, including which features you use and session frequency - solely to improve the experience.
                                     </p>
                                 </div>
                             </div>

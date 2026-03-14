@@ -5,14 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
     const branch = req.nextUrl.searchParams.get("branch");
-    const year   = req.nextUrl.searchParams.get("year"); // e.g. "3"
+    const year   = req.nextUrl.searchParams.get("year"); 
 
     if (!branch) return NextResponse.json({ message: "Branch required" }, { status: 400 });
 
     try {
         await connectToDB();
 
-        // Build user query — if year provided, filter by it
         const userQuery: Record<string, unknown> = { branch };
         if (year && year.trim()) {
             userQuery.year = year.trim();
@@ -36,7 +35,7 @@ export async function GET(req: NextRequest) {
             }))
             .sort((a, b) => b.dayCount - a.dayCount)
             .slice(0, 20)
-            .map(({ dayCount: _, ...rest }) => rest);
+            .map(({ dayCount: _dayCount, ...rest }) => rest);
 
         return NextResponse.json({ data: result }, { status: 200 });
     } catch (err) {

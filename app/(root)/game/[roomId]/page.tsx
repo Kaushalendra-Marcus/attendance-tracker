@@ -278,7 +278,7 @@ export default function GameRoom() {
                                     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                                         className="card p-3 text-center text-sm font-semibold"
                                         style={{ color: result.correct ? "#86efac" : "#fca5a5" }}>
-                                        {result.correct ? "Correct! Points added" : `Wrong — Answer: ${result.correctAnswer}`}
+                                        {result.correct ? "Correct! Points added" : `Wrong - Answer: ${result.correctAnswer}`}
                                     </motion.div>
                                 )}
                             </AnimatePresence>

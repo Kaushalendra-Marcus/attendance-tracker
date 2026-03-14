@@ -2,8 +2,6 @@
 import { useState, ChangeEvent } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { FiSend, FiPaperclip, FiX, FiCheck, FiAlertCircle } from "react-icons/fi"
-import { Navigation } from "@/components/navigation"
-import Footer from "@/components/footer"
 import { GridBackground } from "@/components/PageShared"
 
 export default function FeedbackPage() {

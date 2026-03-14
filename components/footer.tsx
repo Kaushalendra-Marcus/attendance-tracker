@@ -26,7 +26,7 @@ const Footer = () => {
 
     return (
         <footer className="relative overflow-hidden" style={{ borderTop: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
-            {/* Subtle glow blobs — no Math.random(), no hydration bug */}
+            {/* Subtle glow blobs - no Math.random(), no hydration bug */}
             <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full blur-3xl pointer-events-none"
                 style={{ background: "rgba(99,102,241,0.08)" }} />
             <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full blur-3xl pointer-events-none"

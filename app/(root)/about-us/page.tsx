@@ -43,7 +43,7 @@ const steps = [
 
 const features = [
   { title: "75% Rule Calculator", desc: "Instantly see how many classes you can skip or need to attend to stay safe." },
-  { title: "Subject-wise Tracking", desc: "Separate attendance for each subject and lab — no averaging across the board." },
+  { title: "Subject-wise Tracking", desc: "Separate attendance for each subject and lab - no averaging across the board." },
   { title: "Share Timetable", desc: "Copy a batchmate's timetable with one click. No manual entry needed." },
   { title: "Works Offline", desc: "Install as a PWA and use it without internet once loaded on your device." },
   { title: "Custom Date Range", desc: "Filter your attendance history by any date range from the dashboard." },
@@ -157,7 +157,7 @@ export default function AboutPage() {
                 Everything you need
               </h2>
               <p className="mt-3 text-sm" style={{ color: "rgba(148,163,184,0.6)" }}>
-                No fluff — just the tools that actually matter
+                No fluff - just the tools that actually matter
               </p>
             </motion.div>
 

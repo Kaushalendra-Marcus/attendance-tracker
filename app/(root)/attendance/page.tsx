@@ -238,7 +238,7 @@ const AttendanceMarker = () => {
                         <AttendanceCard
                             items={subjects}
                             records={records}
-                            title={`Subjects — ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}`}
+                            title={`Subjects - ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}`}
                             onToggle={toggleAttendance}
                         />
                         <AttendanceCard
