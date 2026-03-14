@@ -2,15 +2,21 @@ import { connectToDB } from "@/lib/mongoose"
 import GameRoom from "@/lib/model/gameroom.model"
 import { NextResponse } from "next/server"
 
+type Player = {
+    rollNo: string
+    name: string
+    score: number
+}
+
 export async function GET() {
     await connectToDB()
 
-    const rooms = await GameRoom.find({ status: "finished" }).lean()
+    const rooms = await GameRoom.find({ status: "finished" }).lean<{ players: Player[] }[]>()
 
     const scores: Record<string, { name: string; rollNo: string; best: number; total: number; games: number }> = {}
 
     for (const room of rooms) {
-        for (const p of (room as any).players) {
+        for (const p of room.players) {
             if (!scores[p.rollNo]) {
                 scores[p.rollNo] = { name: p.name, rollNo: p.rollNo, best: 0, total: 0, games: 0 }
             }

@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
             }))
             .sort((a, b) => b.dayCount - a.dayCount)
             .slice(0, 20)
-            .map(({ dayCount: _dayCount, ...rest }) => rest);
+            .map(({ rollNo, name, year, days }) => ({ rollNo, name, year, days }));
 
         return NextResponse.json({ data: result }, { status: 200 });
     } catch (err) {

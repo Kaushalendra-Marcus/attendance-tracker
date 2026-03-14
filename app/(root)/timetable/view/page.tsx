@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import Link from "next/link"
@@ -21,7 +21,7 @@ const SubjectBadge = ({ type }: { type: string }) => (
     </span>
 )
 
-export default function SharedTimetablePage() {
+function SharedTimetableContent() {
     const searchParams = useSearchParams()
     const rollNo = searchParams.get("rollNo")
     const [days, setDays] = useState<Day[]>([])
@@ -48,65 +48,77 @@ export default function SharedTimetablePage() {
     }, [rollNo])
 
     return (
+        <div className="relative z-10 max-w-5xl mx-auto px-4 py-12">
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Shared timetable</p>
+                    <h1 className="text-2xl font-black text-white">{ownerName}&apos;s Schedule</h1>
+                </div>
+                <Link href="/sign-up" className="btn-primary text-sm">
+                    Create yours
+                </Link>
+            </div>
+
+            {loading && (
+                <div className="flex items-center justify-center p-20">
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent"
+                    />
+                </div>
+            )}
+
+            {error && (
+                <div className="card p-10 text-center">
+                    <p style={{ color: "var(--text-secondary)" }}>{error}</p>
+                </div>
+            )}
+
+            {!loading && !error && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {days.map((day, i) => (
+                        <motion.div
+                            key={day._id || day.day}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.05 * i }}
+                            className="card p-4"
+                        >
+                            <h3 className="text-sm font-bold text-white capitalize mb-3 pb-2 border-b" style={{ borderColor: "var(--border)" }}>
+                                {day.day}
+                            </h3>
+                            <div className="space-y-2">
+                                {day.subjects.map((sub) => (
+                                    <div key={sub._id} className="flex justify-between items-center py-1">
+                                        <span className="text-sm" style={{ color: "var(--text-primary)" }}>{sub.name}</span>
+                                        <div className="flex items-center gap-2">
+                                            {sub.time && <span className="text-xs" style={{ color: "var(--text-muted)" }}>{sub.time}</span>}
+                                            <SubjectBadge type={sub.type} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default function SharedTimetablePage() {
+    return (
         <div style={{ background: "var(--bg-primary)", minHeight: "100vh" }}>
             <div className="relative overflow-hidden">
                 <GridBackground />
-                <div className="relative z-10 max-w-5xl mx-auto px-4 py-12">
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Shared timetable</p>
-                            <h1 className="text-2xl font-black text-white">{ownerName}&apos;s Schedule</h1>
-                        </div>
-                        <Link href="/sign-up" className="btn-primary text-sm">
-                            Create yours
-                        </Link>
+                <Suspense fallback={
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
                     </div>
-
-                    {loading && (
-                        <div className="flex items-center justify-center p-20">
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                                className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent"
-                            />
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="card p-10 text-center">
-                            <p style={{ color: "var(--text-secondary)" }}>{error}</p>
-                        </div>
-                    )}
-
-                    {!loading && !error && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {days.map((day, i) => (
-                                <motion.div
-                                    key={day._id || day.day}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.05 * i }}
-                                    className="card p-4"
-                                >
-                                    <h3 className="text-sm font-bold text-white capitalize mb-3 pb-2 border-b" style={{ borderColor: "var(--border)" }}>
-                                        {day.day}
-                                    </h3>
-                                    <div className="space-y-2">
-                                        {day.subjects.map((sub) => (
-                                            <div key={sub._id} className="flex justify-between items-center py-1">
-                                                <span className="text-sm" style={{ color: "var(--text-primary)" }}>{sub.name}</span>
-                                                <div className="flex items-center gap-2">
-                                                    {sub.time && <span className="text-xs" style={{ color: "var(--text-muted)" }}>{sub.time}</span>}
-                                                    <SubjectBadge type={sub.type} />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                }>
+                    <SharedTimetableContent />
+                </Suspense>
             </div>
         </div>
     )

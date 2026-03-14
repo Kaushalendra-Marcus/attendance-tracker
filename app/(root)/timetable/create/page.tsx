@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
     FiPlus, FiSave, FiTrash2, FiChevronDown, FiUsers,
-    FiEdit3, FiCopy, FiArrowRight, FiArrowLeft, FiCheck, FiX
+    FiEdit3, FiCopy, FiArrowRight, FiArrowLeft, FiCheck
 } from "react-icons/fi"
 import { Navigation } from "@/components/navigation"
 import Footer from "@/components/footer"

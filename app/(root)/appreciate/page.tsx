@@ -50,7 +50,7 @@ const HeartBtn = ({ rollNo, myRollNo, initialLiked }: { rollNo: string; myRollNo
 }
 
 export default function AppreciatePage() {
-    const { rollNo, name } = useUser()
+    const { rollNo } = useUser()  // removed unused `name`
     const [topUsers, setTopUsers] = useState<TopUser[]>([])
     const [myLikes, setMyLikes] = useState<LikedBy[]>([])
     const [myTotal, setMyTotal] = useState(0)
@@ -207,7 +207,7 @@ export default function AppreciatePage() {
 
                             {filtered.map((user, i) => {
                                 const isMe = user.rollNo === rollNo
-                                const iLikedThem = likedByRollNos.has(user.rollNo) // actually need to track who I liked, not who liked me
+                                const iLikedThem = likedByRollNos.has(user.rollNo)
                                 const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : null
 
                                 return (

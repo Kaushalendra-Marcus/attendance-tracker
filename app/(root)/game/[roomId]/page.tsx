@@ -146,7 +146,8 @@ export default function GameRoom() {
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Your score</p>
+                            <p className="text-xs font-semibold text-white truncate max-w-[120px]">{name}</p>
+                            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Score</p>
                             <p className="text-2xl font-black text-white">{myScore}</p>
                         </div>
                     </div>
@@ -321,7 +322,7 @@ export default function GameRoom() {
                                     {room.players[0]?.rollNo === rollNo ? "🏆" : "🎯"}
                                 </p>
                                 <p className="text-2xl font-black text-white mb-1">
-                                    {room.players[0]?.rollNo === rollNo ? "You won!" : "Game Over"}
+                                    {room.players[0]?.rollNo === rollNo ? `${name} wins!` : "Game Over"}
                                 </p>
                                 <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                                     Your score: <span className="font-black text-white">{myScore}</span>

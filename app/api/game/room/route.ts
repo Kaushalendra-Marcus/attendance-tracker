@@ -7,7 +7,7 @@ function makeCode() {
     return Math.random().toString(36).substring(2, 7).toUpperCase()
 }
 
-// GET /api/game/room?code=ABC12 → poll room state
+// GET /api/game/room?code=ABC12 - poll room state
 export async function GET(req: NextRequest) {
     await connectToDB()
     const code = req.nextUrl.searchParams.get("code")
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     })
 }
 
-// POST /api/game/room — create or join
+// POST /api/game/room - create or join
 export async function POST(req: NextRequest) {
     await connectToDB()
     const { action, rollNo, name, code, tags } = await req.json()
