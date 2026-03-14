@@ -1,7 +1,7 @@
 "use client"
-
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { FiDownload, FiX } from "react-icons/fi"
 
 interface BeforeInstallPromptEvent extends Event {
     readonly platforms: string[]
@@ -15,82 +15,89 @@ export default function InstallPrompt() {
 
     useEffect(() => {
         const handler = (e: Event) => {
-            const promptEvent = e as BeforeInstallPromptEvent
-            e.preventDefault?.()
-            setDeferredPrompt(promptEvent)
+            e.preventDefault()
+            setDeferredPrompt(e as BeforeInstallPromptEvent)
             setShow(true)
         }
         window.addEventListener("beforeinstallprompt", handler)
         return () => window.removeEventListener("beforeinstallprompt", handler)
     }, [])
 
+    useEffect(() => {
+        if (!show) return
+        const t = setTimeout(() => setShow(false), 12000)
+        return () => clearTimeout(t)
+    }, [show])
+
     const handleInstall = async () => {
         if (!deferredPrompt) return
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
-        if (outcome === "accepted") {
-            console.log("PWA installed ✨")
-        }
+        if (outcome === "accepted") setDeferredPrompt(null)
         setShow(false)
     }
-
-
-    useEffect(() => {
-        if (show) {
-            const t = setTimeout(() => setShow(false), 10000)
-            return () => clearTimeout(t)
-        }
-    }, [show])
 
     return (
         <AnimatePresence>
             {show && (
                 <motion.div
-                    initial={{ opacity: 0, y: 100, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 100, scale: 0.8 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                    className="fixed bottom-4 right-4 z-50"
+                    initial={{ opacity: 0, y: 80 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 80 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                    className="fixed bottom-5 right-5 z-50 w-72"
                 >
-
-                    <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                        {[...Array(5)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute rounded-full bg-purple-300/20"
-                                initial={{ x: Math.random() * 100, y: Math.random() * 100 }}
-                                animate={{
-                                    x: [null, Math.random() * 60 - 30],
-                                    y: [null, Math.random() * 60 - 30],
-                                    opacity: [0.2, 1, 0.2],
-                                }}
-                                transition={{
-                                    duration: Math.random() * 4 + 3,
-                                    repeat: Infinity,
-                                    repeatType: "reverse",
-                                    ease: "easeInOut",
-                                }}
-                            />
-                        ))}
-                    </div>
-
-                    <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 w-72 shadow-2xl shadow-purple-500/30">
+                    <div
+                        className="rounded-2xl p-5 shadow-2xl"
+                        style={{
+                            background: "var(--bg-secondary)",
+                            border: "1px solid var(--border)",
+                            boxShadow: "0 8px 32px rgba(99,102,241,0.15)"
+                        }}
+                    >
+                        {/* Close */}
                         <motion.button
                             onClick={() => setShow(false)}
-                            whileHover={{ rotate: 90, scale: 1.1 }}
-                            className="absolute top-3 right-3 text-white/60 hover:text-white transition"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="absolute top-3 right-3 p-1 rounded-full transition-colors"
+                            style={{ color: "var(--text-muted)" }}
                         >
-                            ✖
+                            <FiX size={16} />
                         </motion.button>
 
-                        <h3 className="text-white font-bold mb-1">Install MyAttendance</h3>
-                        <p className="text-purple-200 text-sm mb-3">Get App in your mobile</p>
-                        <button
-                            onClick={handleInstall}
-                            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-4 py-2 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all"
+                        {/* Icon */}
+                        <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                            style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)" }}
                         >
-                            Install Now
-                        </button>
+                            <FiDownload className="text-indigo-400" size={18} />
+                        </div>
+
+                        <p className="font-bold text-white text-sm mb-0.5">Install MyAttendance</p>
+                        <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>
+                            Add to home screen for quick access
+                        </p>
+
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setShow(false)}
+                                className="flex-1 py-2 rounded-xl text-xs font-medium transition-all"
+                                style={{
+                                    background: "var(--bg-primary)",
+                                    border: "1px solid var(--border)",
+                                    color: "var(--text-muted)"
+                                }}
+                            >
+                                Not now
+                            </button>
+                            <button
+                                onClick={handleInstall}
+                                className="btn-primary flex-1 py-2 rounded-xl text-xs font-semibold"
+                            >
+                                Install
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
             )}

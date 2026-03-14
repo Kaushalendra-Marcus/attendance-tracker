@@ -1,239 +1,323 @@
 "use client"
 import { useUser } from "@/app/context/useContext"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { motion } from "framer-motion"
-import { FiEdit2, FiCalendar, FiUser, FiHash, FiBook } from "react-icons/fi"
+import { motion, AnimatePresence } from "framer-motion"
+import { FiEdit2, FiCalendar, FiCopy, FiShare2, FiUsers, FiChevronDown, FiCheck, FiX } from "react-icons/fi"
 import Footer from "@/components/footer"
 import { Navigation } from "@/components/navigation"
+import { LoadingScreen, GridBackground } from "@/components/PageShared"
+import { toast, ToastContainer } from "react-toastify"
 
 type Subject = { _id: string; name: string; type: "subject" | "lab"; time?: string }
 type Day = { _id: string; day: string; subjects: Subject[] }
-type TimetableData = { data: { days: Day[] } }
+type TimetableData = { days: Day[] }
+type BranchTimetable = { rollNo: string; name?: string; year?: string; days: Day[] }
+
+const SubjectBadge = ({ type }: { type: string }) => (
+    <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+        style={{
+            background: type === "lab" ? "rgba(239,68,68,0.15)" : "rgba(34,197,94,0.15)",
+            color: type === "lab" ? "#fca5a5" : "#86efac",
+            border: `1px solid ${type === "lab" ? "rgba(239,68,68,0.3)" : "rgba(34,197,94,0.3)"}`
+        }}>
+        {type}
+    </span>
+)
+
+const TimetableGrid = ({ days }: { days: Day[] }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {days.map((day, i) => (
+            <motion.div key={day._id || day.day}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 * i }} className="card p-4">
+                <h3 className="text-sm font-bold text-white capitalize mb-3 pb-2 border-b"
+                    style={{ borderColor: "var(--border)" }}>
+                    {day.day}
+                </h3>
+                <div className="space-y-2">
+                    {day.subjects.map((sub) => (
+                        <div key={sub._id} className="flex justify-between items-center py-1">
+                            <span className="text-sm" style={{ color: "var(--text-primary)" }}>{sub.name}</span>
+                            <div className="flex items-center gap-2">
+                                {sub.time && <span className="text-xs" style={{ color: "var(--text-muted)" }}>{sub.time}</span>}
+                                <SubjectBadge type={sub.type} />
+                            </div>
+                        </div>
+                    ))}
+                    {day.subjects.length === 0 && (
+                        <p className="text-xs py-1" style={{ color: "var(--text-muted)" }}>No classes</p>
+                    )}
+                </div>
+            </motion.div>
+        ))}
+    </div>
+)
+
+const ShareModal = ({ rollNo, onClose }: { rollNo: string; onClose: () => void }) => {
+    const shareUrl = typeof window !== "undefined"
+        ? `${window.location.origin}/timetable/view?rollNo=${rollNo}` : ""
+    const [copied, setCopied] = useState(false)
+    const copy = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+
+    return (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+            style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }} className="card p-6 w-full max-w-md"
+                onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base font-bold text-white">Share Timetable</h3>
+                    <button onClick={onClose} style={{ color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer" }}><FiX /></button>
+                </div>
+                <p className="text-sm mb-4" style={{ color: "var(--text-secondary)" }}>Anyone with this link can view your timetable.</p>
+                <div className="flex items-center gap-2 p-3 rounded-lg border text-sm mb-4"
+                    style={{ background: "var(--bg-secondary)", borderColor: "var(--border)" }}>
+                    <span className="truncate flex-1 font-mono text-xs" style={{ color: "var(--text-secondary)" }}>{shareUrl}</span>
+                    <button onClick={copy} style={{ color: copied ? "#22c55e" : "#818cf8", background: "none", border: "none", cursor: "pointer" }}>
+                        {copied ? <FiCheck /> : <FiCopy />}
+                    </button>
+                </div>
+                <button onClick={copy} className="btn-primary w-full flex items-center justify-center gap-2">
+                    {copied ? <><FiCheck /> Copied!</> : <><FiCopy /> Copy Link</>}
+                </button>
+            </motion.div>
+        </motion.div>
+    )
+}
 
 const TimetablePage = () => {
-    const { name, rollNo, branch } = useUser()
-    const [timetable, setTimeTable] = useState<TimetableData | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { name, rollNo, branch, year } = useUser()
+    const [timetable, setTimetable]         = useState<TimetableData | null>(null)
+    const [loading, setLoading]             = useState(true)
+    const [activeTab, setActiveTab]         = useState<"mine" | "browse">("mine")
+    const [branchTimetables, setBranchTimetables] = useState<BranchTimetable[]>([])
+    const [branchLoading, setBranchLoading] = useState(false)
+    const [expandedRoll, setExpandedRoll]   = useState<string | null>(null)
+    const [copyingFrom, setCopyingFrom]     = useState<string | null>(null)
+    const [showShareModal, setShowShareModal] = useState(false)
     const router = useRouter()
+
+    // Extract numeric year — "2nd Year" -> "2", "3" -> "3"
+    const yearNum = (year || "").replace(/\D/g, "").slice(0, 1)
+
     useEffect(() => {
         if (!rollNo || !branch) return
-        const fetchTimeTable = async () => {
+        const fetchTimetable = async () => {
             try {
                 const res = await fetch(`/api/timetable?rollNo=${rollNo}&branch=${branch}`)
-                if (!res.ok) throw new Error("Not Found")
+                if (!res.ok) throw new Error("Not found")
                 const data = await res.json()
-                if (!data?.data?.days?.length) {
-                    router.push("/timetable/create");
-                } else {
-                    setTimeTable(data);
-                }
+                if (!data?.data?.days?.length) router.push("/timetable/create")
+                else setTimetable(data.data)
             } catch {
                 router.push("/timetable/create")
             } finally {
                 setLoading(false)
             }
         }
-        fetchTimeTable()
+        fetchTimetable()
     }, [router, rollNo, branch])
 
+    const fetchBranchTimetables = useCallback(async () => {
+        if (!branch || branchTimetables.length > 0) return
+        setBranchLoading(true)
+        try {
+            const params = new URLSearchParams({ branch })
+            if (yearNum) params.set("year", yearNum)
+            const res = await fetch(`/api/timetable/branch?${params}`)
+            if (!res.ok) throw new Error("Failed")
+            const data = await res.json()
+            setBranchTimetables((data.data || []).filter((t: BranchTimetable) => t.rollNo !== rollNo))
+        } catch {
+            toast.error("Could not load branch timetables")
+        } finally {
+            setBranchLoading(false)
+        }
+    }, [branch, rollNo, yearNum, branchTimetables.length])
+
+    useEffect(() => {
+        if (activeTab === "browse") fetchBranchTimetables()
+    }, [activeTab, fetchBranchTimetables])
+
+    const copyTimetable = async (source: BranchTimetable) => {
+        if (!rollNo) return
+        setCopyingFrom(source.rollNo)
+        try {
+            const res = await fetch("/api/timetable", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rollNo, branch, days: source.days })
+            })
+            if (!res.ok) throw new Error("Failed")
+            const data = await res.json()
+            setTimetable(data.data)
+            setActiveTab("mine")
+            toast.success("Timetable copied!")
+        } catch {
+            toast.error("Failed to copy timetable")
+        } finally {
+            setCopyingFrom(null)
+        }
+    }
 
     return (
-        <div>
+        <div style={{ background: "var(--bg-primary)", minHeight: "100vh" }}>
             <Navigation />
-            <div className="min-h-screen relative overflow-hidden bg-black">
-                <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-                </div>
+            <ToastContainer position="top-center" autoClose={3000} theme="dark" />
+            <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
 
+            <div className="relative overflow-hidden">
+                <GridBackground />
+                <main className="relative z-10 max-w-6xl mx-auto px-4 py-8">
 
-                {loading && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 flex items-center justify-center z-20"
-                    >
-
-                        {[...Array(30)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute rounded-full bg-purple-300/30"
-                                initial={{
-                                    x: Math.random() * 100,
-                                    y: Math.random() * 100,
-                                    width: Math.random() * 4 + 2,
-                                    height: Math.random() * 4 + 2,
-                                }}
-                                animate={{
-                                    y: [null, Math.random() * 100 - 50],
-                                    opacity: [0.2, 1, 0.2],
-                                }}
-                                transition={{
-                                    duration: Math.random() * 4 + 3,
-                                    repeat: Infinity,
-                                    repeatType: "reverse",
-                                    ease: "easeInOut",
-                                }}
-                            />
-                        ))}
-
-
-                        <motion.div
-                            animate={{ y: [0, -15, 0] }}
-                            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                            className="relative"
-                        >
-
-                            <motion.div
-                                animate={{ rotate: [0, 15, -15, 0] }}
-                                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                                className="text-7xl mb-4"
-                            >
-                                🏃‍♂️
-                            </motion.div>
-
-
-                            <motion.div
-                                animate={{ x: [-3, 2, -3] }}
-                                transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-                                className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-5xl opacity-60"
-                            >
-                                👨‍🏫
-                            </motion.div>
-
-                            <motion.h2
-                                animate={{ opacity: [1, 0.6, 1] }}
-                                transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                                className="text-white text-2xl font-bold tracking-wider drop-shadow-lg"
-                            >
-                                Escaping Professor…
-                            </motion.h2>
-                        </motion.div>
-
-
-                        <motion.div
-                            className="absolute bottom-20"
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                        >
-                            <div className="w-12 h-12 rounded-full border-4 border-purple-400 border-t-transparent" />
-                        </motion.div>
+                    <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+                        <h1 className="text-3xl font-black text-white">Timetable</h1>
+                        <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+                            Manage your schedule or browse batchmates&apos; timetables
+                        </p>
                     </motion.div>
-                )}
-                <main className="relative z-10 p-6">
-                    <div className="max-w-7xl mx-auto space-y-14">
 
-                        <motion.div
-                            initial={{ opacity: 0, y: -30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-center"
-                        >
-                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white">
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
-                                    Your Timetable
+                    {/* User info bar */}
+                    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                        className="card p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+                            {[["Name", name], ["Roll", rollNo], ["Branch", branch], ...(yearNum ? [["Year", yearNum]] : [])].map(([label, val]) => (
+                                <span key={label} style={{ color: "var(--text-secondary)" }}>
+                                    <span style={{ color: "var(--text-muted)" }}>{label}</span>&nbsp;{val}
                                 </span>
-                            </h1>
-                            <p className="text-purple-200/80 mt-2">Manage and track your class schedule.</p>
-                        </motion.div>
-
-                        {/* Profile Card */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex flex-col md:flex-row justify-center items-start md:items-center gap-6"
-                        >
-                            <div className="space-y-3 text-purple-100">
-                                <div className="flex items-center gap-3"><FiUser className="text-purple-300" /> Name: <span className="text-white font-medium">{name}</span></div>
-                                <div className="flex items-center gap-3"><FiHash className="text-purple-300" /> Roll No: <span className="text-white font-medium">{rollNo}</span></div>
-                                <div className="flex items-center gap-3"><FiBook className="text-purple-300" /> Branch: <span className="text-white font-medium">{branch}</span></div>
-                            </div>
-
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-semibold shadow-lg shadow-purple-500/20"
-                            >
-                                <FiEdit2 />
-                                <Link href="/timetable/edit">Edit Timetable</Link>
-                            </motion.div>
-                        </motion.div>
-
-                        {/* Timetable */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-                        >
-                            <div className="absolute inset-0">
-                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-                            </div>
-                            <div className="flex items-center gap-3 mb-6">
-                                <FiCalendar className="text-2xl text-purple-300" />
-                                <h2 className="text-2xl font-bold text-white">Class Schedule</h2>
-                            </div>
-
-                            {timetable?.data?.days?.length ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {timetable.data.days.map((day, i) => (
-                                        <motion.div
-                                            key={day._id}
-                                            initial={{ opacity: 0, y: 40 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.1 * i }}
-                                            whileHover={{ y: -6 }}
-                                            className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-5 hover:shadow-purple-500/20 hover:shadow-xl transition-all"
-                                        >
-                                            <h3 className="text-lg font-bold text-white capitalize mb-4 pb-2 border-b border-white/10">
-                                                {day.day}
-                                            </h3>
-                                            <div className="space-y-3">
-                                                {day.subjects.map((sub) => (
-                                                    <motion.div
-                                                        key={sub._id}
-                                                        whileHover={{ scale: 1.03 }}
-                                                        className={`p-3 rounded-xl border ${sub.type === "lab"
-                                                            ? "bg-purple-700/20 border-purple-600/50"
-                                                            : "bg-purple-800/20 border-purple-700/50"
-                                                            }`}
-                                                    >
-                                                        <div className="flex justify-between items-center">
-                                                            <span className="font-medium text-white">{sub.name}</span>
-                                                            <span className={`text-xs px-2 py-1 rounded-full ${sub.type === "lab"
-                                                                ? "bg-red-600 text-white"
-                                                                : "bg-green-600 text-white"
-                                                                }`}>
-                                                                {sub.type}
-                                                            </span>
-                                                        </div>
-                                                        {sub.time && <div className="mt-1 text-sm text-purple-300">{sub.time}</div>}
-                                                    </motion.div>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    ))}
+                            ))}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => setShowShareModal(true)}
+                                className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg border transition-all"
+                                style={{ color: "var(--text-secondary)", borderColor: "var(--border)", background: "none", cursor: "pointer" }}>
+                                <FiShare2 className="text-indigo-400" /> Share
+                            </button>
+                            <Link href="/timetable/edit">
+                                <div className="btn-primary flex items-center gap-1.5 text-sm cursor-pointer">
+                                    <FiEdit2 /> Edit
                                 </div>
-                            ) : (
-                                <div className="flex flex-col items-center gap-4">
-                                    <p className="text-purple-200">No timetable found.</p>
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-semibold"
-                                    >
-                                        <FiEdit2 />
-                                        <Link href="/timetable/create">Create Timetable</Link>
-                                    </motion.button>
-                                </div>
-                            )}
-                        </motion.div>
+                            </Link>
+                        </div>
+                    </motion.div>
+
+                    {/* Tabs */}
+                    <div className="flex gap-1 mb-6 p-1 rounded-xl w-fit" style={{ background: "var(--bg-secondary)" }}>
+                        {[
+                            { key: "mine",   label: "My Timetable",  icon: FiCalendar },
+                            { key: "browse", label: "Browse Branch", icon: FiUsers },
+                        ].map(tab => (
+                            <button key={tab.key} onClick={() => setActiveTab(tab.key as "mine" | "browse")}
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                style={{
+                                    background: activeTab === tab.key ? "var(--accent-indigo)" : "transparent",
+                                    color: activeTab === tab.key ? "white" : "var(--text-secondary)",
+                                    border: "none", cursor: "pointer",
+                                }}>
+                                <tab.icon /> {tab.label}
+                            </button>
+                        ))}
                     </div>
-                </main>
 
+                    <AnimatePresence mode="wait">
+                        {activeTab === "mine" && (
+                            <motion.div key="mine" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                {timetable?.days?.length ? (
+                                    <TimetableGrid days={timetable.days} />
+                                ) : (
+                                    <div className="card p-10 text-center">
+                                        <p className="mb-4" style={{ color: "var(--text-secondary)" }}>No timetable found.</p>
+                                        <Link href="/timetable/create">
+                                            <div className="btn-primary inline-flex items-center gap-2 cursor-pointer">
+                                                <FiEdit2 /> Create Timetable
+                                            </div>
+                                        </Link>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {activeTab === "browse" && (
+                            <motion.div key="browse" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                {/* Year filter badge */}
+                                {yearNum && (
+                                    <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg w-fit"
+                                        style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>
+                                        <span className="text-xs font-semibold" style={{ color: "#a5b4fc" }}>
+                                            Showing Year {yearNum} timetables
+                                        </span>
+                                    </div>
+                                )}
+
+                                {branchLoading ? (
+                                    <div className="card p-10 flex items-center justify-center">
+                                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                                            className="w-6 h-6 rounded-full border-2 border-indigo-500 border-t-transparent" />
+                                    </div>
+                                ) : branchTimetables.length === 0 ? (
+                                    <div className="card p-10 text-center">
+                                        <p style={{ color: "var(--text-secondary)" }}>
+                                            No timetables found for {yearNum ? `Year ${yearNum}, ` : ""}{branch}.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {branchTimetables.map((bt) => (
+                                            <div key={bt.rollNo} className="card overflow-hidden">
+                                                <button className="w-full flex items-center justify-between p-4 text-left"
+                                                    onClick={() => setExpandedRoll(expandedRoll === bt.rollNo ? null : bt.rollNo)}>
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-white">{bt.name || bt.rollNo}</p>
+                                                        <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                                                            {bt.rollNo}
+                                                            {bt.year && ` · Year ${bt.year}`}
+                                                            {` · ${bt.days.length} days configured`}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); copyTimetable(bt) }}
+                                                            disabled={!!copyingFrom}
+                                                            className="btn-primary flex items-center gap-1.5 text-xs px-3 py-1.5">
+                                                            <FiCopy size={12} />
+                                                            {copyingFrom === bt.rollNo ? "Copying..." : "Copy"}
+                                                        </button>
+                                                        <motion.div animate={{ rotate: expandedRoll === bt.rollNo ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                                            <FiChevronDown style={{ color: "var(--text-muted)" }} />
+                                                        </motion.div>
+                                                    </div>
+                                                </button>
+
+                                                <AnimatePresence>
+                                                    {expandedRoll === bt.rollNo && (
+                                                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                                                            exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t"
+                                                            style={{ borderColor: "var(--border)" }}>
+                                                            <div className="p-4">
+                                                                <TimetableGrid days={bt.days} />
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </main>
                 <Footer />
             </div>
+
+            <AnimatePresence>
+                {showShareModal && rollNo && (
+                    <ShareModal rollNo={rollNo} onClose={() => setShowShareModal(false)} />
+                )}
+            </AnimatePresence>
         </div>
     )
 }

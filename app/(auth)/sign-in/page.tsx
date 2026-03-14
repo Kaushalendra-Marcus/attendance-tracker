@@ -1,209 +1,256 @@
 "use client"
+
 import Image from "next/image"
 import React, { useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { useUser } from "@/app/context/useContext"
-const Page = () => {
-  const [rollno, setRollno] = useState("")
+import { FiEye, FiEyeOff, FiArrowRight, FiAlertCircle } from "react-icons/fi"
+
+const Background = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+    <div className="absolute inset-0" style={{ background: "#06080f" }} />
+    <div className="absolute" style={{ width: 700, height: 500, top: "-120px", left: "-100px", background: "radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 65%)", borderRadius: "50%" }} />
+    <div className="absolute" style={{ width: 600, height: 500, bottom: "-100px", right: "-80px", background: "radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 65%)", borderRadius: "50%" }} />
+    <div className="absolute" style={{ width: 400, height: 400, top: "40%", left: "30%", background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)", borderRadius: "50%" }} />
+    <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px)", backgroundSize: "52px 52px" }} />
+  </div>
+)
+
+const stats = ["75% Rule Solved", "Subject-wise Tracking", "Works Offline", "1-click Timetable", "Zero Stress", "Free Forever"]
+
+const Ticker = () => (
+  <>
+    <style>{`
+      @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      .ticker-track { animation: ticker 22s linear infinite; }
+    `}</style>
+    <div className="overflow-hidden w-full" style={{ maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)" }}>
+      <div className="ticker-track flex gap-10 whitespace-nowrap w-max">
+        {[...stats, ...stats].map((s, i) => (
+          <span key={i} className="flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.18em] uppercase" style={{ color: "rgba(148,163,184,0.45)" }}>
+            <span style={{ width: 4, height: 4, borderRadius: "50%", background: "rgba(99,102,241,0.7)", display: "inline-block", flexShrink: 0 }} />
+            {s}
+          </span>
+        ))}
+      </div>
+    </div>
+  </>
+)
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.52, delay, ease: [0.23, 1, 0.32, 1] as const },
+})
+
+export default function SignInPage() {
+  const [rollno,   setRollno]   = useState("")
+  const [college,  setCollege]  = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
+  const [error,    setError]    = useState("")
+  const [showPw,   setShowPw]   = useState(false)
+  const [focused,  setFocused]  = useState<string | null>(null)
   const router = useRouter()
   const { setUser } = useUser()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
-
     try {
-      const res = await fetch("/api/signin", {
+      const res  = await fetch("/api/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rollno, password })
+        body: JSON.stringify({ rollno, college, password }),
       })
-
       const data = await res.json()
-
-      if (!res.ok) throw new Error(data.message || "Login failed")
-
-      // Check if user data exists in the response
-      if (!data.user) {
-        throw new Error("User data not found in response")
-      }
-
-      console.log("User data:", data.user);
+      if (!res.ok)    throw new Error(data.message || "Login failed")
+      if (!data.user) throw new Error("User data not found")
       setUser({
-        name: data.user.name,
-        rollNo: data.user.rollno,
-        branch: data.user.branch
+        name:    data.user.name,
+        rollNo:  data.user.rollno,
+        branch:  data.user.branch,
+        year:    data.user.year    || "",
+        college: data.user.college || "",
+        userId:  data.user.userId  || "",
       })
-
       router.push("/")
     } catch (err) {
-      const error = err as Error;
-      console.error("Login error:", error);
-      setError(error.message || "Login failed. Please try again.");
+      setError((err as Error).message || "Login failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
+  const inputStyle = (name: string): React.CSSProperties => ({
+    width: "100%",
+    padding: "13px 16px",
+    borderRadius: "10px",
+    fontSize: "14px",
+    color: "#ffffff",
+    outline: "none",
+    transition: "border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease",
+    background: focused === name ? "rgba(99,102,241,0.12)" : "rgba(99,102,241,0.06)",
+    border: `1px solid ${focused === name ? "rgba(99,102,241,0.5)" : "rgba(99,102,241,0.18)"}`,
+    boxShadow: focused === name ? "0 0 0 3px rgba(99,102,241,0.12)" : "none",
+  })
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900/60 via-purple-700/60 to-purple-500/60 flex items-center justify-center p-4">
-      <div className="absolute inset-0">
-        <motion.div
-          className="absolute inset-0"
-          animate={{
-            background: [
-              'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%)',
-              'radial-gradient(circle at 80% 50%, rgba(255, 119, 198, 0.3) 0%, transparent 50%)',
-              'radial-gradient(circle at 50% 20%, rgba(120, 119, 255, 0.3) 0%, transparent 50%)',
-            ]
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "linear"
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black/50 to-indigo-900/20" />
-      </div>
+    <main className="min-h-screen flex relative" style={{ background: "#06080f" }}>
+      <Background />
 
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
-      </div>
-      <div className="w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-white/20">
-          <div className="p-8">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center mb-4 bg-white/20 p-3 rounded-full">
-                <Image
-                  src="/assets/signinlogo.png"
-                  width={60}
-                  height={60}
-                  alt="Login Logo"
-                  className="filter drop-shadow-md"
-                />
-              </div>
-              <h1 className="text-3xl font-bold text-white mb-1">Student Portal</h1>
-              <h2 className="text-md font-bold text-white mb-1">Should I Attend today&apos;s Class</h2>              <p className="text-white/80">Enter your credentials to continue</p>
-            </div>
-
-            {error && (
-              <div className="mb-6 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-200 text-sm">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="rollno" className="block text-sm font-medium text-white/80 mb-1">
-                  Roll No
-                </label>
-                <div className="relative">
-                  <input
-                    id="rollno"
-                    type="text"
-                    placeholder="e.g. 230110038"
-                    value={rollno}
-                    onChange={(e) => setRollno(e.target.value)}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all duration-200"
-                    required
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg className="h-5 w-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-1">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all duration-200"
-                    required
-                  />
-                  <div
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <svg className="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-11-7.5a11.663 11.663 0 013.433-4.9m4.17-2.22A10.026 10.026 0 0112 5c5 0 9.27 3.11 11 7.5a11.663 11.663 0 01-1.482 2.6M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18" />
-                      </svg>
-                    ) : (
-                      <svg className="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-purple-500 focus:ring-purple-400 border-white/30 rounded"
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-white/80">
-                    Remember me
-                  </label>
-                </div>
-
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={`w-full flex cursor-pointer justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400 transition-all duration-200 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                >
-                  {isLoading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Signing in...
-                    </>
-                  ) : 'Sign in'}
-                </button>
-              </div>
-            </form>
+      {/* LEFT PANEL */}
+      <div className="hidden lg:flex lg:w-[50%] relative flex-col justify-between p-16 overflow-hidden">
+        <motion.div {...fadeUp(0.05)} className="relative z-10 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)" }}>
+            <Image src="/assets/signinlogo.png" width={22} height={22} alt="Should I Attend logo" />
           </div>
+          <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>Should I Attend</span>
+        </motion.div>
 
-          <div className="px-8 py-4 bg-white/5 text-center border-t border-white/10">
-            <p className="text-white/60 text-sm">
-              New student?{' '}
-              <a href="/sign-up" className="font-medium text-white hover:text-purple-200 transition-colors duration-200">
-                Create account
-              </a>
-            </p>
-          </div>
+        <div className="relative z-10 space-y-7">
+          <motion.div {...fadeUp(0.12)}>
+            <p className="text-xl font-bold tracking-[0.22em] uppercase mb-5" style={{ color: "rgba(255,255,255,0.8)" }}>Attendance Tracker</p>
+            <h1 className="font-black text-white leading-[1.06]" style={{ fontSize: "clamp(2.6rem, 3.8vw, 3.6rem)", letterSpacing: "-0.04em" }}>
+              Know exactly<br />
+              <span style={{ background: "linear-gradient(135deg, #6366F1 0%, #3B82F6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                when to skip.
+              </span>
+            </h1>
+          </motion.div>
+          <motion.p {...fadeUp(0.2)} className="text-base leading-relaxed max-w-xs" style={{ color: "rgba(148,163,184,0.7)" }}>
+            Track every subject daily, calculate your 75% safety margin, and share timetables all in one place.
+          </motion.p>
+          <motion.div {...fadeUp(0.27)} className="flex flex-wrap gap-2">
+            {["📅 Daily Tracking", "📊 75% Calculator", "🔗 Share Timetable", "📱 Works Offline"].map((f) => (
+              <span key={f} className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.2)", color: "rgba(203,213,225,0.8)" }}>{f}</span>
+            ))}
+          </motion.div>
+          <motion.div {...fadeUp(0.34)}><Ticker /></motion.div>
         </div>
 
-
-
+        <motion.div {...fadeUp(0.4)} className="relative z-10 pt-6" style={{ borderTop: "1px solid rgba(99,102,241,0.15)" }}>
+          <p className="text-xs italic" style={{ color: "rgba(100,116,139,0.6)" }}>&ldquo;Finally know how many lectures I can bunk.&rdquo; every engineering student ever</p>
+        </motion.div>
       </div>
-    </div>
+
+      {/* RIGHT PANEL */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-14 relative" style={{ borderLeft: "1px solid rgba(99,102,241,0.1)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(99,102,241,0.1), transparent)" }} />
+
+        <div className="w-full max-w-[370px] relative z-10">
+          <motion.div {...fadeUp(0.05)} className="flex lg:hidden items-center gap-3 mb-10">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)" }}>
+              <Image src="/assets/signinlogo.png" width={18} height={18} alt="Logo" />
+            </div>
+            <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>Should I Attend</span>
+          </motion.div>
+
+          <motion.div {...fadeUp(0.06)} className="flex flex-col items-center mb-8">
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-5" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)", boxShadow: "0 8px 32px rgba(99,102,241,0.2)" }}>
+              <Image src="/assets/signinlogo.png" width={48} height={48} alt="Should I Attend" priority />
+            </div>
+            <h2 className="font-black text-white mb-1.5" style={{ fontSize: "1.75rem", letterSpacing: "-0.03em" }}>Welcome back</h2>
+            <p className="text-sm text-center" style={{ color: "rgba(100,116,139,0.9)" }}>Sign in to check your attendance status</p>
+          </motion.div>
+
+          <AnimatePresence>
+            {error && (
+              <motion.div key="err" initial={{ opacity: 0, height: 0, marginBottom: 0 }} animate={{ opacity: 1, height: "auto", marginBottom: 20 }} exit={{ opacity: 0, height: 0, marginBottom: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+                <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl text-sm" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.22)", color: "rgba(252,165,165,0.9)" }}>
+                  <FiAlertCircle size={14} className="mt-0.5 shrink-0" style={{ color: "#f87171" }} />
+                  {error}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+
+            {/* Roll No */}
+            <motion.div {...fadeUp(0.15)}>
+              <label htmlFor="rollno" className="block mb-2 text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "rgba(148,163,184,0.55)" }}>Roll Number</label>
+              <input id="rollno" type="text" placeholder="e.g. 230110038" value={rollno}
+                onChange={(e) => setRollno(e.target.value)} required autoComplete="username"
+                style={inputStyle("rollno")} onFocus={() => setFocused("rollno")} onBlur={() => setFocused(null)} />
+            </motion.div>
+
+            {/* College */}
+            <motion.div {...fadeUp(0.20)}>
+              <label htmlFor="college" className="block mb-2 text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "rgba(148,163,184,0.55)" }}>
+                College Name
+                <span className="ml-2 normal-case tracking-normal text-[10px]" style={{ color: "rgba(148,163,184,0.35)" }}>(leave blank if none)</span>
+              </label>
+              <input id="college" type="text" placeholder="e.g. HBTU Kanpur"
+                value={college} onChange={(e) => setCollege(e.target.value)}
+                autoComplete="organization"
+                style={inputStyle("college")} onFocus={() => setFocused("college")} onBlur={() => setFocused(null)} />
+            </motion.div>
+
+            {/* Password */}
+            <motion.div {...fadeUp(0.26)}>
+              <label htmlFor="password" className="block mb-2 text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "rgba(148,163,184,0.55)" }}>Password</label>
+              <div className="relative">
+                <input id="password" type={showPw ? "text" : "password"} placeholder="Enter your password"
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  required autoComplete="current-password"
+                  style={{ ...inputStyle("password"), paddingRight: "44px" }}
+                  onFocus={() => setFocused("password")} onBlur={() => setFocused(null)} />
+                <button type="button" onClick={() => setShowPw(p => !p)} aria-label={showPw ? "Hide password" : "Show password"}
+                  style={{ position: "absolute", right: "13px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(100,116,139,0.6)", display: "flex", alignItems: "center" }}>
+                  {showPw ? <FiEyeOff size={15} /> : <FiEye size={15} />}
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Remember me */}
+            <motion.div {...fadeUp(0.31)} className="pt-0.5">
+              <label className="flex items-center gap-2.5 cursor-pointer select-none w-fit">
+                <input type="checkbox" id="remember" name="remember" className="w-3.5 h-3.5 rounded cursor-pointer" style={{ accentColor: "#6366F1" }} />
+                <span className="text-xs font-medium" style={{ color: "rgba(100,116,139,0.65)" }}>Remember me</span>
+              </label>
+            </motion.div>
+
+            {/* Submit */}
+            <motion.div {...fadeUp(0.36)} className="pt-1">
+              <motion.button type="submit" disabled={isLoading}
+                whileHover={!isLoading ? { y: -1, boxShadow: "0 8px 28px rgba(99,102,241,0.45)" } : {}}
+                whileTap={!isLoading ? { scale: 0.988 } : {}}
+                className="w-full flex items-center justify-center gap-2.5 rounded-xl font-bold text-sm text-white"
+                style={{ padding: "14px 20px", background: "linear-gradient(135deg, #6366F1 0%, #3B82F6 100%)", boxShadow: "0 4px 20px rgba(99,102,241,0.35)", border: "none", cursor: isLoading ? "not-allowed" : "pointer", opacity: isLoading ? 0.75 : 1, letterSpacing: "-0.01em", transition: "opacity 0.15s ease" }}>
+                {isLoading ? (
+                  <><svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg><span>Signing in...</span></>
+                ) : (
+                  <><span>Sign in</span><FiArrowRight size={15} /></>
+                )}
+              </motion.button>
+            </motion.div>
+          </form>
+
+          <motion.div {...fadeUp(0.41)} className="flex items-center gap-4 my-6">
+            <div className="flex-1 h-px" style={{ background: "rgba(99,102,241,0.15)" }} />
+            <span className="text-xs" style={{ color: "rgba(71,85,105,0.6)" }}>or</span>
+            <div className="flex-1 h-px" style={{ background: "rgba(99,102,241,0.15)" }} />
+          </motion.div>
+
+          <motion.div {...fadeUp(0.46)} className="text-center">
+            <p className="text-sm" style={{ color: "rgba(71,85,105,0.9)" }}>
+              New here?{" "}
+              <a href="/sign-up" className="font-semibold transition-colors duration-150" style={{ color: "#6366F1" }}
+                onMouseEnter={e => ((e.target as HTMLElement).style.color = "#818cf8")}
+                onMouseLeave={e => ((e.target as HTMLElement).style.color = "#6366F1")}>
+                Create a free account
+              </a>
+            </p>
+          </motion.div>
+
+          <motion.p {...fadeUp(0.5)} className="text-center text-xs mt-8" style={{ color: "rgba(51,65,85,0.75)" }}>
+            🔒 Private and secured, only you can access your data
+          </motion.p>
+        </div>
+      </div>
+    </main>
   )
 }
-
-export default Page

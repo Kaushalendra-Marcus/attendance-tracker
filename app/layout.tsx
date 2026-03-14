@@ -1,18 +1,22 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./context/provider";
 import Oneko from "@/components/oneko";
 import { Analytics } from "@vercel/analytics/next";
 import FeedbackBubble from "@/components/feedbackpopup";
 
-const inter = Inter({ subsets: ["latin"] });
+// ✅ FIX: Inter (Google Font) hataya — network pe block hoti thi, app crash hoti thi
+// System font stack use kar raha hai — fast + no network needed
+
+// ✅ FIX: themeColor metadata se viewport mein move kiya (Next.js 15 requirement)
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
+};
 
 export const metadata: Metadata = {
   title: "MyAttendance",
   description: "Track your attendance easily",
   manifest: "/manifest.json",
-  themeColor: "#FFFFFF",
   icons: {
     icon: "/icons/icon-192.png",
     apple: "/icons/icon-192.png",
@@ -32,7 +36,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body className={inter.className}>
+      {/* ✅ System font — Inter jaisi dikhti hai, zero network calls */}
+      <body style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <Providers>
           <FeedbackBubble />
           <Oneko />

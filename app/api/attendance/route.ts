@@ -15,100 +15,65 @@ type RequestBody = {
     date: string;
 };
 
-
 export async function GET(req: NextRequest) {
     await connectToDB()
     const { searchParams } = new URL(req.url)
-    const rollNO = searchParams.get("rollNo")
+    const rollNo = searchParams.get("rollNo")
     const date = searchParams.get("date")
-    if (!rollNO || !date) {
-        return NextResponse.json(
-            { message: "Roll No or date is missing in attendance api" },
-            { status: 400 }
-        )
+
+    if (!rollNo || !date) {
+        return NextResponse.json({ message: "Roll No or date is missing" }, { status: 400 })
     }
+
     try {
-        const user = await User.findOne({ rollNo: rollNO })
+        const user = await User.findOne({ rollno: rollNo })
         if (!user) {
-            return NextResponse.json(
-                { message: "User not found" },
-                { status: 400 }
-            );
+            return NextResponse.json({ message: "User not found" }, { status: 400 })
         }
-        const dateAttendance = await Attendace.findOne({
-            user: user._id,
-            date: date
-        })
+
+        const dateAttendance = await Attendace.findOne({ user: user._id, date })
         return NextResponse.json({
             success: true,
             data: dateAttendance ? dateAttendance.records : []
         })
-
     } catch (err) {
-        const error = err as Error
-        console.log(error);
-        return NextResponse.json(
-            { message: "Error in attendance current date" },
-            { status: 400 }
-        )
+        console.error(err)
+        return NextResponse.json({ message: "Error fetching attendance" }, { status: 500 })
     }
 }
 
 export async function PUT(req: NextRequest) {
     await connectToDB()
     try {
-        const body = await req.json()
-        const { rollNo, presents, date } = body as RequestBody;
+        const { rollNo, presents, date } = await req.json() as RequestBody
 
         if (!rollNo || !presents || !date) {
-            return NextResponse.json(
-                { message: "Error in getting fields in attendance route file" },
-                { status: 400 }
-            );
+            return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
         }
 
-        const user = await User.findOne({ rollNO: rollNo });
+        const user = await User.findOne({ rollno: rollNo })
         if (!user) {
-            return NextResponse.json(
-                { message: "User not found" },
-                { status: 400 }
-            );
+            return NextResponse.json({ message: "User not found" }, { status: 400 })
         }
-
-        const existingAttendance = await Attendace.findOne({
-            user: user._id,
-            date: date
-        });
 
         const records = presents.map((e: AttendanceRecord) => ({
             name: e.name,
             type: e.type,
             isPresent: e.isPresent
-        }));
+        }))
 
-        if (existingAttendance) {
-            existingAttendance.records = records;
-            await existingAttendance.save();
+        const existing = await Attendace.findOne({ user: user._id, date })
+
+        if (existing) {
+            existing.records = records
+            await existing.save()
         } else {
-            const newAttendance = new Attendace({
-                user: user._id,
-                records: records,
-                date: date
-            });
-            await newAttendance.save();
+            await new Attendace({ user: user._id, records, date }).save()
         }
 
-        return NextResponse.json(
-            { message: "Attendance saved successfully" },
-            { status: 200 }
-        );
-
+        return NextResponse.json({ message: "Attendance saved successfully" }, { status: 200 })
     } catch (err) {
-        const error = err as Error;
-        console.log(error);
-        return NextResponse.json(
-            { message: "Error in attendance route file" },
-            { status: 400 }
-        );
+        console.error(err)
+        return NextResponse.json({ message: "Error saving attendance" }, { status: 500 })
     }
 }

@@ -1,139 +1,115 @@
 "use client"
-import { motion } from "framer-motion"
-import { Navigation } from "@/components/navigation"
+import { FiAlertCircle, FiTool, FiUser, FiSlash, FiLock, FiShield, FiRefreshCw, FiBook } from "react-icons/fi"
+import { GridBackground } from "@/components/PageShared"
 import Footer from "@/components/footer"
+import { Navigation } from "@/components/navigation"
+
+const sections = [
+    {
+        icon: <FiAlertCircle size={15} className="text-indigo-400" />,
+        iconBg: "rgba(99,102,241,0.12)", iconBorder: "rgba(99,102,241,0.25)",
+        title: "1. Acceptance of Terms",
+        text: "By accessing or using MyAttendance, you agree to be bound by these Terms of Service. If you do not agree to all the terms, you may not use our service."
+    },
+    {
+        icon: <FiTool size={15} className="text-blue-400" />,
+        iconBg: "rgba(59,130,246,0.12)", iconBorder: "rgba(59,130,246,0.25)",
+        title: "2. Service Description",
+        text: "MyAttendance is a digital tool designed to track and calculate attendance between specified dates, providing subject-wise analytics and percentage reporting."
+    },
+    {
+        icon: <FiUser size={15} className="text-emerald-400" />,
+        iconBg: "rgba(34,197,94,0.12)", iconBorder: "rgba(34,197,94,0.25)",
+        title: "3. User Responsibilities",
+        items: [
+            "Account Security — You are responsible for maintaining confidentiality of your credentials and all activity under your account.",
+            "Data Accuracy — Ensure all attendance data entered is accurate and complies with applicable rules."
+        ]
+    },
+    {
+        icon: <FiSlash size={15} className="text-red-400" />,
+        iconBg: "rgba(239,68,68,0.12)", iconBorder: "rgba(239,68,68,0.25)",
+        title: "4. Prohibited Conduct",
+        items: [
+            "Using the service for illegal purposes",
+            "Attempting to compromise system security",
+            "Misrepresenting attendance data",
+            "Sharing accounts with unauthorised users"
+        ]
+    },
+    {
+        icon: <FiLock size={15} className="text-amber-400" />,
+        iconBg: "rgba(245,158,11,0.12)", iconBorder: "rgba(245,158,11,0.25)",
+        title: "5. Intellectual Property",
+        text: "All content, features, and functionality of MyAttendance are the exclusive property of our team and are protected by applicable intellectual property laws."
+    },
+    {
+        icon: <FiShield size={15} className="text-indigo-400" />,
+        iconBg: "rgba(99,102,241,0.12)", iconBorder: "rgba(99,102,241,0.25)",
+        title: "6. Limitation of Liability",
+        text: "MyAttendance shall not be liable for any indirect, incidental, or consequential damages resulting from your use of or inability to use the service."
+    },
+    {
+        icon: <FiRefreshCw size={15} className="text-blue-400" />,
+        iconBg: "rgba(59,130,246,0.12)", iconBorder: "rgba(59,130,246,0.25)",
+        title: "7. Modifications",
+        text: "We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the updated terms."
+    },
+    {
+        icon: <FiBook size={15} className="text-indigo-400" />,
+        iconBg: "rgba(99,102,241,0.12)", iconBorder: "rgba(99,102,241,0.25)",
+        title: "8. Governing Law",
+        text: "These terms shall be governed by the laws of the jurisdiction where our team is based, without regard to conflict of law provisions."
+    },
+]
 
 export default function TermsOfService() {
-  const sections = [
-    { title: "1. Acceptance of Terms", color: "from-purple-500/20 to-indigo-500/20", text: "By accessing or using the Attendance Marker application, you agree to be bound by these Terms of Service. If you do not agree to all the terms, you may not use our service." },
-    { title: "2. Service Description", color: "from-emerald-500/20 to-teal-500/20", text: "Attendance Marker is a digital solution designed to track and calculate attendance between specified dates. The service provides analytics and reporting features for attendance management." },
-    { title: "3. User Responsibilities", color: "from-amber-500/20 to-orange-500/20", items: ["Account Security: You are responsible for maintaining the confidentiality of your account credentials and for all activities under your account.", "Data Accuracy: You must ensure all attendance data entered is accurate and complies with applicable laws."] },
-    { title: "4. Prohibited Conduct", color: "from-rose-500/20 to-red-500/20", items: ["Using the service for illegal purposes", "Attempting to compromise system security", "Misrepresenting attendance data", "Sharing accounts with unauthorized users"] },
-    { title: "5. Intellectual Property", color: "from-violet-500/20 to-purple-500/20", text: "All content, features, and functionality of Attendance Marker are the exclusive property of our company and are protected by international copyright, trademark, and other intellectual property laws." },
-    { title: "6. Limitation of Liability", color: "from-fuchsia-500/20 to-pink-500/20", text: "Attendance Marker shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the service." },
-    { title: "7. Modifications", color: "from-cyan-500/20 to-blue-500/20", text: "We reserve the right to modify these terms at any time. Continued use after changes constitutes acceptance of the modified terms." },
-    { title: "8. Governing Law", color: "from-sky-500/20 to-indigo-500/20", text: "These terms shall be governed by the laws of the jurisdiction where our company is registered, without regard to its conflict of law provisions." },
-  ]
+    const effectiveDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
 
-  return (
-    <div>
-      <Navigation />
-      <div className="min-h-screen relative overflow-hidden bg-black">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:50px_50px]" />
+    return (
+        <div style={{ background: "var(--bg-primary)", minHeight: "100vh" }}>
+            <Navigation />
+            <div className="relative overflow-hidden">
+                <GridBackground />
+
+                <main className="relative z-10 max-w-3xl mx-auto px-5 py-16">
+
+                    <div className="mb-14">
+                        <h1 className="text-4xl md:text-5xl font-black text-white mb-3">Terms of Service</h1>
+                        <p className="text-sm" style={{ color: "var(--text-muted)" }}>Effective: {effectiveDate}</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {sections.map((s, i) => (
+                            <section key={i} className="card p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                                        style={{ background: s.iconBg, border: `1px solid ${s.iconBorder}` }}>
+                                        {s.icon}
+                                    </div>
+                                    <h2 className="text-base font-bold text-white">{s.title}</h2>
+                                </div>
+
+                                {s.text && (
+                                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{s.text}</p>
+                                )}
+
+                                {s.items && (
+                                    <ul className="space-y-2">
+                                        {s.items.map((item, idx) => (
+                                            <li key={idx} className="flex items-start gap-2 text-sm" style={{ color: "var(--text-secondary)" }}>
+                                                <span className="mt-1.5 w-1 h-1 rounded-full shrink-0 bg-indigo-400" />
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </section>
+                        ))}
+                    </div>
+                </main>
+            </div>
+            <Footer />
         </div>
-        <div className="absolute inset-0">
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black/50 to-indigo-900/20"
-            animate={{
-              background: [
-                'radial-gradient(circle at 20% 50%, rgba(120,119,198,.3) 0%, transparent 50%)',
-                'radial-gradient(circle at 80% 30%, rgba(255,119,198,.3) 0%, transparent 50%)',
-                'radial-gradient(circle at 50% 80%, rgba(120,119,255,.3) 0%, transparent 50%)',
-              ]
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          />
-          <div className="absolute inset-0 bg-grid-pattern" />
-        </div>
-
-        {/* Floating particles */}
-        {[...Array(30)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            initial={{
-              x: Math.random() * 100,
-              y: Math.random() * 100,
-              width: Math.random() * 3 + 1,
-              height: Math.random() * 3 + 1,
-              background: `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.3 + 0.1})`,
-            }}
-            animate={{
-              y: [null, Math.random() * 100 - 50],
-              x: [null, Math.random() * 100 - 50],
-              opacity: [0.1, 1, 0.1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-
-
-
-        <motion.main
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-5xl mx-auto px-4 py-20 sm:px-6 lg:px-8"
-        >
-          {/* Hero */}
-          <motion.div
-            className="text-center mb-20"
-            initial={{ y: -30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7 }}
-          >
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-4">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
-                Terms of Service
-              </span>
-            </h1>
-            <p className="text-xl text-purple-200/80">
-              Effective: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
-          </motion.div>
-
-          {/* Content */}
-          <div className="space-y-12">
-            {sections.map((section, index) => (
-              <motion.section
-                key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="relative group"
-              >
-                {/* Glow on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${section.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
-
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 md:p-10 group-hover:border-white/20 transition-all">
-                  <h2 className="text-3xl font-bold text-white mb-6">{section.title}</h2>
-
-                  {section.items ? (
-                    <ul className="space-y-3">
-                      {section.items.map((item, idx) => (
-                        <motion.li
-                          key={idx}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 + idx * 0.05 }}
-                          viewport={{ once: true }}
-                          className="flex items-start gap-3"
-                        >
-                          <span className="text-purple-400 mt-1">•</span>
-                          <span className="text-purple-100/90 leading-relaxed">{item}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-purple-100/90 leading-relaxed text-lg">
-                      {section.text}
-                    </p>
-                  )}
-                </div>
-              </motion.section>
-            ))}
-          </div>
-        </motion.main>
-
-        <Footer />
-      </div>
-    </div>
-  )
+    )
 }

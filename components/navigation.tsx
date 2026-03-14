@@ -4,270 +4,137 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import User from "./user"
 import UserMobile from "./UserMobile"
-import { FiHome, FiPieChart, FiCalendar, FiSettings, FiMenu, FiX, FiInfo, FiPhone } from "react-icons/fi"
+import { FiHome, FiPieChart, FiCalendar, FiCheckSquare, FiMenu, FiX, FiInfo, FiLogOut, FiZap, FiHeart } from "react-icons/fi"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useUser } from "@/app/context/useContext"
 
 interface NavLinkProps {
-  href: string
-  onClick?: () => void
-  children: React.ReactNode
-  icon: React.ComponentType<{ className?: string }>
+    href: string
+    onClick?: () => void
+    children: React.ReactNode
+    icon: React.ComponentType<{ className?: string }>
 }
 
 const NavLink = ({ href, onClick, children, icon: Icon }: NavLinkProps) => {
-  const pathname = usePathname()
-  const isActive = pathname === href
+    const pathname = usePathname()
+    const isActive = pathname === href || pathname.startsWith(href + "/")
 
-  return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="relative group"
-    >
-      <Link
-        href={href}
-        onClick={onClick}
-        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300
-          ${isActive
-            ? 'text-white bg-gradient-to-r from-purple-500/30 to-indigo-500/30 border border-purple-400/50 shadow-lg shadow-purple-500/20'
-            : 'text-purple-200 hover:text-white hover:bg-white/5 border border-transparent'
-          }`}
-      >
-        <Icon className="text-lg" />
-        {children}
-      </Link>
-      {isActive && (
-        <motion.div
-          className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-indigo-500/20 blur"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-      )}
-    </motion.div>
-  )
+    return (
+        <Link
+            href={href}
+            onClick={onClick}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                ${isActive
+                    ? "text-white bg-indigo-500/20 border border-indigo-500/40"
+                    : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                }`}
+        >
+            <Icon className="text-base flex-shrink-0" />
+            {children}
+        </Link>
+    )
 }
 
-interface MobileNavigationProps {
-  isOpen: boolean
-  onClose: () => void
-  rollNo: string | null | undefined
-}
 const handleLogout = () => {
-  localStorage.clear();
-  window.location.href = "/sign-in";
+    localStorage.clear()
+    window.location.href = "/sign-in"
 }
 
-const MobileNavigation = ({ isOpen, onClose, rollNo }: MobileNavigationProps) => (
-  <AnimatePresence>
-    {isOpen && (
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3 }}
-        className="md:hidden absolute top-full left-0 right-0 z-50"
-      >
-        <div className="mx-4 mt-2">
-          <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-2 shadow-2xl">
-            <NavLink href="/" onClick={onClose} icon={FiHome}>
-              Home
-            </NavLink>
-            <NavLink href="/timetable" onClick={onClose} icon={FiCalendar}>
-              TimeTable
-            </NavLink>
-            <NavLink href="/attendance" onClick={onClose} icon={FiSettings}>
-              Attendance
-            </NavLink>
-            <NavLink href="/dashboard" onClick={onClose} icon={FiPieChart}>
-              Dashboard
-            </NavLink>
-            <NavLink href="/contact-us" onClick={onClose} icon={FiPhone}>
-              Contact Us
-            </NavLink>
-            <NavLink href="/about-us" onClick={onClose} icon={FiInfo}>
-              About Us
-            </NavLink>
-          </div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="mt-4"
-          >
-            <UserMobile />
-            {rollNo && (
-              <motion.button
-                onClick={handleLogout}
-                whileTap={{ scale: 0.95 }}
-                className="w-full text-left mt-4 text-sm font-semibold bg-black/80 text-white hover:text-white px-4 py-2 rounded-xl border border-gray-800 hover:bg-red-600 transition-all duration-300"
-              >
-                Logout
-              </motion.button>
-            )}
-
-          </motion.div>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-)
+const NAV_LINKS = [
+    { href: "/", label: "Home", icon: FiHome },
+    { href: "/timetable", label: "Timetable", icon: FiCalendar },
+    { href: "/attendance", label: "Attendance", icon: FiCheckSquare },
+    { href: "/dashboard", label: "Dashboard", icon: FiPieChart },
+    { href: "/game", label: "Game", icon: FiZap },
+    { href: "/appreciate", label: "Appreciate", icon: FiHeart },
+    { href: "/about-us", label: "About", icon: FiInfo },
+]
 
 export const Navigation = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { rollNo } = useUser()
-  return (
-    <nav className=" bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const { rollNo } = useUser()
 
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-10 -left-10 w-20 h-20 bg-purple-500/20 rounded-full blur-2xl"
-          animate={{
-            scale: [1, 1.5, 1],
-            x: [0, 50, 0],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute -bottom-10 -right-10 w-20 h-20 bg-indigo-500/20 rounded-full blur-2xl"
-          animate={{
-            scale: [1.5, 1, 1.5],
-            x: [0, -50, 0],
-            opacity: [0.4, 0.2, 0.4],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
+    return (
+        <nav
+            className="sticky top-0 z-50 border-b"
+            style={{
+                background: "rgba(7, 13, 26, 0.85)",
+                borderColor: "var(--border)",
+                backdropFilter: "blur(16px)"
+            }}
+        >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
+                        <Image src="/icon.png" alt="MyAttendance" width={32} height={32} className="rounded-lg" />
+                        <span className="text-base font-bold text-white">MyAttendance</span>
+                    </Link>
 
+                    {/* Desktop links */}
+                    <div className="hidden md:flex items-center gap-1">
+                        {NAV_LINKS.map(l => (
+                            <NavLink key={l.href} href={l.href} icon={l.icon}>{l.label}</NavLink>
+                        ))}
+                    </div>
 
-      {[...Array(15)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full"
-          initial={{
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            width: Math.random() * 10 + 1,
-            height: Math.random() * 10 + 1,
-            background: `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.3 + 0.1})`,
-          }}
-          animate={{
-            y: [null, Math.random() * 50 - 25],
-            x: [null, Math.random() * 50 - 25],
-            opacity: [0.1, 1, 0.1],
-          }}
-          transition={{
-            duration: Math.random() * 8 + 8,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut"
-          }}
-        />
-      ))}
+                    {/* Desktop user + logout */}
+                    <div className="hidden md:flex items-center gap-3">
+                        <User />
+                        {rollNo && (
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-red-400 transition-colors duration-200"
+                            >
+                                <FiLogOut />
+                                Logout
+                            </button>
+                        )}
+                    </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-
-          <motion.div
-            className="flex-shrink-0"
-            whileHover={{ scale: 1.02 }}
-          >
-            <Link href="/" className="flex items-center gap-3">
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/40 to-indigo-500/40 rounded-xl blur-lg" />
-                <Image
-                  src="/icon.png"
-                  alt="MyAttendance Logo"
-                  width={44}
-                  height={44}
-                  className="relative bg-gradient-to-br from-purple-600/40 to-indigo-500/40 rounded-xl p-2 shadow-lg"
-                />
-                <div className="absolute inset-0 border border-purple-400/30 rounded-xl" />
-              </motion.div>
-
-              <motion.span
-                className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-300 via-white to-indigo-300"
-                whileHover={{ scale: 1.05 }}
-              >
-                MyAttendance
-              </motion.span>
-            </Link>
-          </motion.div>
-
-
-          <div className="hidden md:block">
-            <div className="flex items-center space-x-1">
-              <NavLink href="/" icon={FiHome}>
-                Home
-              </NavLink>
-              <NavLink href="/timetable" icon={FiCalendar}>
-                TimeTable
-              </NavLink>
-              <NavLink href="/attendance" icon={FiSettings}>
-                Attendance
-              </NavLink>
-              <NavLink href="/dashboard" icon={FiPieChart}>
-                Dashboard
-              </NavLink>
-              <NavLink href="/about-us" icon={FiInfo}>
-                About Us
-              </NavLink>
+                    {/* Mobile hamburger */}
+                    <button
+                        className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+                    </button>
+                </div>
             </div>
-          </div>
 
-          <div className="hidden md:flex items-center gap-2">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <User />
-            </motion.div>
-            {rollNo && (
-              <motion.button
-                onClick={handleLogout}
-                whileTap={{ scale: 0.95 }}
-                className="text-sm font-semibold bg-transparent cursor-pointer text-white hover:text-white px-4 py-2 rounded-xl border border-gray-800 hover:bg-red-600 transition-all duration-300"
-              >
-                Logout
-              </motion.button>
-            )}
-
-          </div>
-
-          <div className="md:hidden ">
-            <motion.button
-              type="button"
-              className="relative p-2 rounded-xl text-purple-200 hover:text-white hover:bg-white/5 transition-all duration-300"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              whileTap={{ scale: 0.9 }}
-            >
-              <span className="sr-only">Open menu</span>
-              <motion.div
-                animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {mobileMenuOpen ? (
-                  <FiX className="h-6 w-6" />
-                ) : (
-                  <FiMenu className="h-6 w-6" />
+            {/* Mobile menu */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="md:hidden border-t overflow-hidden"
+                        style={{ borderColor: "var(--border)" }}
+                    >
+                        <div className="px-4 py-3 space-y-1">
+                            {NAV_LINKS.map(l => (
+                                <NavLink key={l.href} href={l.href} icon={l.icon} onClick={() => setMobileMenuOpen(false)}>
+                                    {l.label}
+                                </NavLink>
+                            ))}
+                        </div>
+                        <div className="px-4 pb-4 space-y-2">
+                            <UserMobile />
+                            {rollNo && (
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-red-400 px-3 py-2 rounded-lg hover:bg-white/5 transition-all"
+                                >
+                                    <FiLogOut />
+                                    Logout
+                                </button>
+                            )}
+                        </div>
+                    </motion.div>
                 )}
-              </motion.div>
-            </motion.button>
-          </div>
-        </div>
-      </div>
-
-      <MobileNavigation
-        isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        rollNo={rollNo}
-      />
-    </nav>
-  )
+            </AnimatePresence>
+        </nav>
+    )
 }

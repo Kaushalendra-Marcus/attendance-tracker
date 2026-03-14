@@ -3,71 +3,61 @@ import User from "@/lib/model/user.model";
 import { connectToDB } from "@/lib/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-type Subject = {
-  name: string;
-  type: string;
-  time?: string;
-};
-
-type Day = {
-  day: string;
-  subjects: Subject[];
-};
-
-type RequestBody = {
-  rollNo: string;
-  days: Day[];
-};
+type Subject = { name: string; type: string; time?: string };
+type Day = { day: string; subjects: Subject[] };
 
 export async function POST(req: NextRequest) {
     await connectToDB();
     try {
-        const { rollNo, days } = await req.json() as RequestBody;
-        
+        const body = await req.json();
+        const rollNo  = (body.rollNo  || "").trim();
+        const college = (body.college || "").trim().toLowerCase();
+        const userId  = (body.userId  || "").trim();
+        const days: Day[] = body.days;
+
         if (!rollNo || !days || !days.length) {
-            return NextResponse.json({ 
-                success: false, 
-                message: "Roll number and at least one day with subjects are required" 
+            return NextResponse.json({
+                success: false,
+                message: "Roll number and at least one day are required"
             }, { status: 400 });
         }
 
-        const user = await User.findOne({ rollno: rollNo });
+        // Find user — userId is most reliable, then college+rollno, then rollno alone
+        let user;
+        if (userId) {
+            user = await User.findById(userId);
+        } else if (college) {
+            user = await User.findOne({ rollno: rollNo, college });
+        } else {
+            user = await User.findOne({ rollno: rollNo, college: { $in: ["", null] } });
+            if (!user) user = await User.findOne({ rollno: rollNo });
+        }
+
         if (!user) {
-            return NextResponse.json({ 
-                success: false, 
-                message: "User not found" 
+            return NextResponse.json({
+                success: false,
+                message: "User not found"
             }, { status: 404 });
         }
 
-        let timetable = await TimeTable.findOne({ user: user._id });
-        
-        if (!timetable) {
-            timetable = new TimeTable({
-                user: user._id,
-                days: days
-            });
-        } else {
-            days.forEach((newDay: Day) => {
-                const existingDayIndex = timetable.days.findIndex((d: Day) => d.day === newDay.day);
-                if (existingDayIndex !== -1) {
-                    timetable.days[existingDayIndex].subjects = newDay.subjects;
-                } else {
-                    timetable.days.push(newDay);
-                }
-            });
-        }
+        const timetable = await TimeTable.findOneAndUpdate(
+            { user: user._id },
+            { $set: { user: user._id, days } },
+            { new: true, upsert: true }
+        );
 
-        await timetable.save();
-        return NextResponse.json({ 
-            success: true, 
-            message: "Timetable updated successfully" 
+        return NextResponse.json({
+            success: true,
+            message: "Timetable saved successfully",
+            data: timetable
         }, { status: 200 });
+
     } catch (err) {
         const error = err as Error;
         console.error(error);
-        return NextResponse.json({ 
-            success: false, 
-            message: error.message || "Error in timetable creation" 
+        return NextResponse.json({
+            success: false,
+            message: error.message || "Server error"
         }, { status: 500 });
     }
 }
