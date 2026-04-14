@@ -22,11 +22,11 @@ Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 ## Key Highlights
 
 - Subject-wise attendance tracking with daily calendar view
-- 75% attendance calculator — know exactly how many classes to skip or attend
-- Timetable sharing — copy a batchmate's timetable with one click
-- Live Quiz Battle — create rooms, add custom questions, play with batchmates
-- Appreciate system — like batchmates, see who liked you, leaderboard
-- Fully installable PWA — works offline, no app store needed
+- 75% attendance calculator - know exactly how many classes to skip or attend
+- Timetable sharing - copy a batchmate's timetable with one click
+- Live Quiz Battle - create rooms, add custom questions, play with batchmates
+- Appreciate system - like batchmates, see who liked you, leaderboard
+- Fully installable PWA - works offline, no app store needed
 - Fast, responsive UI with smooth animations
 - Secure backend with MongoDB
 
@@ -43,34 +43,34 @@ Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 ### Dashboard
 - Auto-loads all subjects from your timetable
 - Shows live percentage per subject with animated progress bars
-- Click any subject card to expand — see Present, Absent, Total
+- Click any subject card to expand - see Present, Absent, Total
 - "Can skip X classes" or "Attend X more to reach 75%" calculator
-- Custom start date filter — select any date range, resets to year start
+- Custom start date filter - select any date range, resets to year start
 
 ### Timetable
 - Create manually day by day, or copy from a batchmate
-- Browse branch timetables — top 7 most complete shown
-- Share your timetable via link — public, no login needed to view
+- Browse branch timetables - top 7 most complete shown
+- Share your timetable via link - public, no login needed to view
 - Edit existing timetable with day chips for quick navigation
 
 ### Quiz Battle (Game)
-- Open lobby — all active rooms visible, join without any code
+- Open lobby - all active rooms visible, join without any code
 - Create a named room, anyone can join anytime
-- Players add their own questions — set question, options, correct answer, optional tags
-- Like/dislike questions — auto-removes low-rated ones (3+ dislikes, majority dislike)
+- Players add their own questions - set question, options, correct answer, optional tags
+- Like/dislike questions - auto-removes low-rated ones (3+ dislikes, majority dislike)
 - Room owner or question creator can delete any question
 - 20 seconds per question, speed bonus: faster answer = more points (15/10/5)
 - Live score bar updates in real time during the game
 - Final leaderboard shown at the end
 
 ### Appreciate
-- Like any batchmate once — toggle on/off
+- Like any batchmate once - toggle on/off
 - See total likes received and who liked you (with date)
-- Leaderboard — top appreciated students with gold/silver/bronze medals
+- Leaderboard - top appreciated students with gold/silver/bronze medals
 - Search by name or roll number
 
 ### Timetable Sharing
-- `/timetable/view?rollNo=xxx` — public page, no login required
+- `/timetable/view?rollNo=xxx` - public page, no login required
 - Share link from timetable page with one click
 
 ### PWA
