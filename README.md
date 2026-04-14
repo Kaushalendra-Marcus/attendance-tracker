@@ -5,11 +5,17 @@ MyAttendance is a modern attendance management web application built with Next.j
 Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 
 ## Screenshots
+<img width="1919" height="978" alt="image" src="https://github.com/user-attachments/assets/3ba3142b-e53c-4a00-bace-6582d5ba12c6" />
+<img width="1919" height="971" alt="image" src="https://github.com/user-attachments/assets/fe0e55e2-b7fb-444e-9d5e-98c2499b8d3d" />
+<img width="1919" height="967" alt="image" src="https://github.com/user-attachments/assets/953c848e-a107-49ef-b676-0f30aedee5e0" />
+<img width="1919" height="956" alt="image" src="https://github.com/user-attachments/assets/13cac016-ab31-48ff-925d-fe200c326fe6" />
+<img width="1919" height="976" alt="image" src="https://github.com/user-attachments/assets/713ae8ed-d44e-44ec-a0cc-97fda3bf64db" />
+<img width="1067" height="745" alt="image" src="https://github.com/user-attachments/assets/0d382b22-0f3d-4eea-8811-4f5003ba084e" />
 
-<img width="1752" height="968" alt="image" src="https://github.com/user-attachments/assets/b93e59f2-5297-4619-80a9-4f0455dcb142" />
-<img width="1272" height="873" alt="image" src="https://github.com/user-attachments/assets/317c9956-8d40-49c2-8446-cdca423a1596" />
-<img width="1223" height="822" alt="image" src="https://github.com/user-attachments/assets/af48de95-039b-4898-b64a-080704c5281a" />
-<img width="1222" height="866" alt="image" src="https://github.com/user-attachments/assets/33e742c8-e214-494c-a024-839b4df59cda" />
+
+
+
+
 
 ---
 
