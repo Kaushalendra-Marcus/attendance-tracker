@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { useUser } from "@/app/context/useContext"
 import { FiEye, FiEyeOff, FiArrowRight, FiAlertCircle } from "react-icons/fi"
+import Link from "next/link"
 
 const Background = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
@@ -45,13 +46,13 @@ const fadeUp = (delay = 0) => ({
 })
 
 export default function SignInPage() {
-  const [rollno,   setRollno]   = useState("")
-  const [college,  setCollege]  = useState("")
+  const [rollno, setRollno] = useState("")
+  const [college, setCollege] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [error,    setError]    = useState("")
-  const [showPw,   setShowPw]   = useState(false)
-  const [focused,  setFocused]  = useState<string | null>(null)
+  const [error, setError] = useState("")
+  const [showPw, setShowPw] = useState(false)
+  const [focused, setFocused] = useState<string | null>(null)
   const router = useRouter()
   const { setUser } = useUser()
 
@@ -60,21 +61,21 @@ export default function SignInPage() {
     setIsLoading(true)
     setError("")
     try {
-      const res  = await fetch("/api/signin", {
+      const res = await fetch("/api/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rollno, college, password }),
       })
       const data = await res.json()
-      if (!res.ok)    throw new Error(data.message || "Login failed")
+      if (!res.ok) throw new Error(data.message || "Login failed")
       if (!data.user) throw new Error("User data not found")
       setUser({
-        name:    data.user.name,
-        rollNo:  data.user.rollno,
-        branch:  data.user.branch,
-        year:    data.user.year    || "",
+        name: data.user.name,
+        rollNo: data.user.rollno,
+        branch: data.user.branch,
+        year: data.user.year || "",
         college: data.user.college || "",
-        userId:  data.user.userId  || "",
+        userId: data.user.userId || "",
       })
       router.push("/")
     } catch (err) {
@@ -103,12 +104,14 @@ export default function SignInPage() {
 
       {/* LEFT PANEL */}
       <div className="hidden lg:flex lg:w-[50%] relative flex-col justify-between p-16 overflow-hidden">
-        <motion.div {...fadeUp(0.05)} className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)" }}>
-            <Image src="/assets/signinlogo.png" width={22} height={22} alt="Should I Attend logo" />
-          </div>
-          <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>Should I Attend</span>
-        </motion.div>
+        <Link href="/" className="flex items-center gap-3" aria-label="Go to homepage">
+          <motion.div {...fadeUp(0.05)} className="relative z-10 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)" }}>
+              <Image src="/assets/signinlogo.png" width={22} height={22} alt="Should I Attend logo" />
+            </div>
+            <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>Should I Attend</span>
+          </motion.div>
+        </Link>
 
         <div className="relative z-10 space-y-7">
           <motion.div {...fadeUp(0.12)}>
@@ -251,6 +254,6 @@ export default function SignInPage() {
           </motion.p>
         </div>
       </div>
-    </main>
+    </main >
   )
 }
