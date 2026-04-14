@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useUser } from "@/app/context/useContext"
 import { Branches } from "@/constants"
 import { FiEye, FiEyeOff, FiArrowRight, FiAlertCircle } from "react-icons/fi"
+import Link from "next/link"
 
 const Background = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
@@ -51,22 +52,22 @@ const selectStyle = (focused: string | null, name: string): React.CSSProperties 
 })
 
 export default function SignUpPage() {
-  const [name,         setName]         = useState("")
-  const [rollno,       setRollno]       = useState("")
-  const [college,      setCollege]      = useState("")
-  const [branch,       setBranch]       = useState("")
+  const [name, setName] = useState("")
+  const [rollno, setRollno] = useState("")
+  const [college, setCollege] = useState("")
+  const [branch, setBranch] = useState("")
   const [customBranch, setCustomBranch] = useState("")
-  const [year,         setYear]         = useState("")
-  const [password,     setPassword]     = useState("")
-  const [isLoading,    setIsLoading]    = useState(false)
-  const [error,        setError]        = useState("")
-  const [showPw,       setShowPw]       = useState(false)
-  const [focused,      setFocused]      = useState<string | null>(null)
+  const [year, setYear] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [showPw, setShowPw] = useState(false)
+  const [focused, setFocused] = useState<string | null>(null)
   const router = useRouter()
   const { setUser } = useUser()
 
   const isCustomBranch = branch === "Other (Custom)"
-  const finalBranch    = isCustomBranch ? customBranch.trim() : branch
+  const finalBranch = isCustomBranch ? customBranch.trim() : branch
 
   // Extract numeric year - "2nd Year" -> "2", "3rd" -> "3"
   const yearNum = year.replace(/\D/g, "").slice(0, 1)
@@ -89,12 +90,12 @@ export default function SignUpPage() {
       if (!res.ok) throw new Error(data.message || "Signup failed")
       if (data.user) {
         setUser({
-          name:    data.user.name,
-          rollNo:  data.user.rollno,
-          branch:  data.user.branch,
-          year:    data.user.year    || "",
+          name: data.user.name,
+          rollNo: data.user.rollno,
+          branch: data.user.branch,
+          year: data.user.year || "",
           college: data.user.college || "",
-          userId:  data.user.userId  || "",
+          userId: data.user.userId || "",
         })
       }
       router.push("/")
@@ -125,10 +126,12 @@ export default function SignUpPage() {
       {/* LEFT PANEL */}
       <div className="hidden lg:flex lg:w-[48%] relative flex-col justify-between p-16 overflow-hidden">
         <motion.div {...fadeUp(0.05)} className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)" }}>
-            <Image src="/assets/signinlogo.png" width={22} height={22} alt="Should I Attend logo" />
-          </div>
-          <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>Should I Attend</span>
+          <Link href="/" className="flex items-center gap-3" aria-label="Go to homepage">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(99,102,241,0.25)" }}>
+              <Image src="/assets/signinlogo.png" width={22} height={22} alt="Should I Attend logo" />
+            </div>
+            <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>Should I Attend</span>
+          </Link>
         </motion.div>
 
         <div className="relative z-10 space-y-8">
