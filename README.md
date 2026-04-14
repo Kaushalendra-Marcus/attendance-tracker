@@ -1,26 +1,33 @@
 # MyAttendance-Take Control of Your Attendance
 
 MyAttendance is a modern attendance management web application built with Next.js that helps students track subject-wise attendance, calculate 75% eligibility, share timetables with batchmates, and more. Installable as a PWA on any device.
+Used by more than 1300 users.
 
 Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 
 ## Screenshots
+<img width="1919" height="978" alt="image" src="https://github.com/user-attachments/assets/3ba3142b-e53c-4a00-bace-6582d5ba12c6" />
+<img width="1919" height="971" alt="image" src="https://github.com/user-attachments/assets/fe0e55e2-b7fb-444e-9d5e-98c2499b8d3d" />
+<img width="1919" height="967" alt="image" src="https://github.com/user-attachments/assets/953c848e-a107-49ef-b676-0f30aedee5e0" />
+<img width="1919" height="956" alt="image" src="https://github.com/user-attachments/assets/13cac016-ab31-48ff-925d-fe200c326fe6" />
+<img width="1919" height="976" alt="image" src="https://github.com/user-attachments/assets/713ae8ed-d44e-44ec-a0cc-97fda3bf64db" />
+<img width="1067" height="745" alt="image" src="https://github.com/user-attachments/assets/0d382b22-0f3d-4eea-8811-4f5003ba084e" />
 
-<img width="1752" height="968" alt="image" src="https://github.com/user-attachments/assets/b93e59f2-5297-4619-80a9-4f0455dcb142" />
-<img width="1272" height="873" alt="image" src="https://github.com/user-attachments/assets/317c9956-8d40-49c2-8446-cdca423a1596" />
-<img width="1223" height="822" alt="image" src="https://github.com/user-attachments/assets/af48de95-039b-4898-b64a-080704c5281a" />
-<img width="1222" height="866" alt="image" src="https://github.com/user-attachments/assets/33e742c8-e214-494c-a024-839b4df59cda" />
+
+
+
+
 
 ---
 
 ## Key Highlights
 
 - Subject-wise attendance tracking with daily calendar view
-- 75% attendance calculator — know exactly how many classes to skip or attend
-- Timetable sharing — copy a batchmate's timetable with one click
-- Live Quiz Battle — create rooms, add custom questions, play with batchmates
-- Appreciate system — like batchmates, see who liked you, leaderboard
-- Fully installable PWA — works offline, no app store needed
+- 75% attendance calculator - know exactly how many classes to skip or attend
+- Timetable sharing - copy a batchmate's timetable with one click
+- Live Quiz Battle - create rooms, add custom questions, play with batchmates
+- Appreciate system - like batchmates, see who liked you, leaderboard
+- Fully installable PWA - works offline, no app store needed
 - Fast, responsive UI with smooth animations
 - Secure backend with MongoDB
 
@@ -37,34 +44,34 @@ Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 ### Dashboard
 - Auto-loads all subjects from your timetable
 - Shows live percentage per subject with animated progress bars
-- Click any subject card to expand — see Present, Absent, Total
+- Click any subject card to expand - see Present, Absent, Total
 - "Can skip X classes" or "Attend X more to reach 75%" calculator
-- Custom start date filter — select any date range, resets to year start
+- Custom start date filter - select any date range, resets to year start
 
 ### Timetable
 - Create manually day by day, or copy from a batchmate
-- Browse branch timetables — top 7 most complete shown
-- Share your timetable via link — public, no login needed to view
+- Browse branch timetables - top 7 most complete shown
+- Share your timetable via link - public, no login needed to view
 - Edit existing timetable with day chips for quick navigation
 
 ### Quiz Battle (Game)
-- Open lobby — all active rooms visible, join without any code
+- Open lobby - all active rooms visible, join without any code
 - Create a named room, anyone can join anytime
-- Players add their own questions — set question, options, correct answer, optional tags
-- Like/dislike questions — auto-removes low-rated ones (3+ dislikes, majority dislike)
+- Players add their own questions - set question, options, correct answer, optional tags
+- Like/dislike questions - auto-removes low-rated ones (3+ dislikes, majority dislike)
 - Room owner or question creator can delete any question
 - 20 seconds per question, speed bonus: faster answer = more points (15/10/5)
 - Live score bar updates in real time during the game
 - Final leaderboard shown at the end
 
 ### Appreciate
-- Like any batchmate once — toggle on/off
+- Like any batchmate once - toggle on/off
 - See total likes received and who liked you (with date)
-- Leaderboard — top appreciated students with gold/silver/bronze medals
+- Leaderboard - top appreciated students with gold/silver/bronze medals
 - Search by name or roll number
 
 ### Timetable Sharing
-- `/timetable/view?rollNo=xxx` — public page, no login required
+- `/timetable/view?rollNo=xxx` - public page, no login required
 - Share link from timetable page with one click
 
 ### PWA
