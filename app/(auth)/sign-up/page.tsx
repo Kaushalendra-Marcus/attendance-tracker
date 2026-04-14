@@ -307,7 +307,7 @@ export default function SignUpPage() {
           </motion.div>
 
           <motion.p {...fadeUp(0.55)} className="text-center text-xs mt-6" style={{ color: "rgba(51,65,85,0.75)" }}>
-            🔒 Free forever. No credit card needed.
+            Free forever. No credit card needed.
           </motion.p>
         </div>
       </div>
