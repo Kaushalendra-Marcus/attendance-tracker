@@ -1,6 +1,7 @@
 # MyAttendance-Take Control of Your Attendance
 
 MyAttendance is a modern attendance management web application built with Next.js that helps students track subject-wise attendance, calculate 75% eligibility, share timetables with batchmates, and more. Installable as a PWA on any device.
+Used by more than 1300 users.
 
 Live: [myattendance-eta.vercel.app](https://myattendance-eta.vercel.app/)
 
