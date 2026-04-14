@@ -49,7 +49,7 @@ export const Hero = () => {
             <div className="absolute inset-0 pointer-events-none"
                 style={{ background: "radial-gradient(ellipse 70% 40% at 50% -5%, rgba(99,102,241,0.18), transparent)" }} />
 
-            {/* ─── HERO ──────────────────────────────────────────── */}
+            {/*HERO  */}
             <section className="relative z-10 max-w-5xl mx-auto px-6 pt-28 pb-24 text-center">
                 <motion.div variants={stagger} initial="hidden" animate="show">
                     <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-black tracking-tight text-white leading-none mb-6">
@@ -83,7 +83,7 @@ export const Hero = () => {
                 </motion.div>
             </section>
 
-            {/* ─── FEATURES ─────────────────────────────────────── */}
+            {/*FEATURES  */}
             <section className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-black text-white">Everything you need</h2>
@@ -107,7 +107,7 @@ export const Hero = () => {
                 </motion.div>
             </section>
 
-            {/* ─── HOW IT WORKS ─────────────────────────────────── */}
+            {/* HOW IT WORKS*/}
             <section id="how-it-works" className="relative z-10 py-24"
                 style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.015)" }}>
                 <div className="max-w-5xl mx-auto px-6">
@@ -142,7 +142,7 @@ export const Hero = () => {
                 </div>
             </section>
 
-            {/* ─── CHECKLIST SECTION ────────────────────────────── */}
+            {/* CHECKLIST SECTION */}
             <section className="relative z-10 max-w-3xl mx-auto px-6 py-24 text-center">
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10">
                     <h2 className="text-3xl md:text-4xl font-black text-white">One app, all covered</h2>
@@ -196,7 +196,7 @@ export const Hero = () => {
                 </div>
             </section>
 
-            {/* ─── CTA BANNER ───────────────────────────────────── */}
+            {/* CTA BANNER */}
             <section className="relative z-10 max-w-3xl mx-auto px-6 py-24 text-center">
                 <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
                     <div className="card p-10"

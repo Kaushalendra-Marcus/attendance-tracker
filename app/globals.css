@@ -6,12 +6,12 @@
   --bg-card: rgba(255, 255, 255, 0.03);
   --bg-card-hover: rgba(255, 255, 255, 0.06);
   --border: rgba(255, 255, 255, 0.08);
-  --border-accent: rgba(99, 102, 241, 0.4);
+  --border-accent: rgba(0, 4, 255, 0.4);
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #475569;
-  --accent-blue: #3b82f6;
-  --accent-indigo: #6366f1;
+  --accent-blue: #2679ff;
+  --accent-indigo: #0004ff;
   --accent-glow: rgba(99, 102, 241, 0.15);
   --success: #22c55e;
   --danger: #ef4444;
@@ -65,14 +65,14 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #60a5fa, #818cf8);
+  background: linear-gradient(135deg, #60a5fa, #001aff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .glow-blue {
-  box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 30px rgba(0, 98, 255, 0.15);
 }
 
 input, select, textarea {
