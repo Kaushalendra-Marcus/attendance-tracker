@@ -124,7 +124,7 @@ export default function SignInPage() {
             Track every subject daily, calculate your 75% safety margin, and share timetables all in one place.
           </motion.p>
           <motion.div {...fadeUp(0.27)} className="flex flex-wrap gap-2">
-            {["📅 Daily Tracking", "📊 75% Calculator", "�- Share Timetable", "📱 Works Offline"].map((f) => (
+            {["Daily Tracking", "75% Calculator", "Share Timetable", "Works Offline"].map((f) => (
               <span key={f} className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.2)", color: "rgba(203,213,225,0.8)" }}>{f}</span>
             ))}
           </motion.div>
@@ -247,7 +247,7 @@ export default function SignInPage() {
           </motion.div>
 
           <motion.p {...fadeUp(0.5)} className="text-center text-xs mt-8" style={{ color: "rgba(51,65,85,0.75)" }}>
-            🔒 Private and secured, only you can access your data
+            Private and secured, only you can access your data
           </motion.p>
         </div>
       </div>
