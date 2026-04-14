@@ -262,8 +262,8 @@ const AttendanceMarker = () => {
                         )}
                     </div>
                 </main>
-                <Footer />
             </div>
+            <Footer />
         </div>
     )
 }
